@@ -1,9 +1,11 @@
 require 'template'
 
-class TemplateTest < Minitest::Test
+class TemplateTest < Test
   def test_rendering
     template = Template.new("Hello, <%= self %>!")
-    assert_equal 'Hello, World!', template.render('World')
+    result = template.render('World')
+
+    expect result, :==, 'Hello, World!'
   end
 
   def test_errors
@@ -14,8 +16,9 @@ class TemplateTest < Minitest::Test
     template = Template.new(tpl, 'lib/whatever.rb')
 
     ex = assert_raises { template.render }
-    assert_kind_of NameError, ex
-    assert_includes ex.message, 'unicorn'
-    assert_send [ex.backtrace.first, :start_with?, 'lib/whatever.rb:2']
+
+    expect ex, :is_a, NameError
+    expect ex.message, :includes, 'unicorn'
+    expect ex.backtrace.first, :starts_with, 'lib/whatever.rb:2'
   end
 end
