@@ -14,6 +14,8 @@ class RouterTest < Test
     dele '/foo', :delete_foo
     opts '/foo', :foo_options
     ptch '/foo', :update_foo2
+
+    get %r{/foo/\d+}, :foo_regex
   end
 
   def test_successful_lookups
@@ -26,6 +28,9 @@ class RouterTest < Test
       %w(DELETE /foo) => :delete_foo,
       %w(OPTIONS /foo) => :foo_options,
       %w(PATCH /foo) => :update_foo2,
+      %w(GET /foo/1) => :foo_regex,
+      %w(GET /foo/2) => :foo_regex,
+      %w(GET /foo/3) => :foo_regex,
     }.each do |req_args, expected_result|
       env = req(*req_args)
       expect ROUTER.lookup(env), :==, expected_result
@@ -38,6 +43,8 @@ class RouterTest < Test
       %w(GET /api),
       %w(POST /api),
       %w(GET /api/sign_in),
+      %w(GET /foo/abc),
+      %w(GET /foo/),
     ].each do |req_args|
       env = req(*req_args)
       expect ROUTER.lookup(env), :is_nil

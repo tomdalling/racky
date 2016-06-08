@@ -1,22 +1,26 @@
-require 'erb'
+require 'erubis'
 
 class Template
-  def self.from_file(path)
-    new(File.read(path), path)
-  end
-
-  def initialize(erb_string, filename=nil)
-    @compiled_source = ERB.new(erb_string).src
-    @filename = filename
+  def initialize(raw_source, filename='(ERB)')
+    @erb = Erubis::EscapedEruby.new(raw_source, filename: filename)
   end
 
   def render(context=nil)
-    context.instance_eval(@compiled_source, @filename || '(ERB)', 0)
+    @erb.evaluate(context)
   end
 
-  module CleanBinding
-    def self.binding_for_template_context
-      yield.instance_eval{ binding }
+  #TODO: this should probably be moved to a separate class
+  TEMPLATE_DIR = 'templates'
+  def self.render(name, context)
+    name = name.to_sym
+
+    @cache ||= {}
+    template = @cache.fetch(name) do
+      path = File.join(TEMPLATE_DIR, "#{name}.erb")
+      raw_source = File.read(path)
+      new(raw_source, path)
     end
+
+    template.render(context)
   end
 end
