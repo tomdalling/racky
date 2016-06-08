@@ -1,6 +1,7 @@
 require 'routing'
 
 class RouterTest < Test
+  MOUNTED_ROUTER = Routing::Endpoint.new('GET', '/mounted', :mounted)
   ROUTER = Routing.define do
     get  '/', :root
     head '/', :root_head
@@ -16,6 +17,8 @@ class RouterTest < Test
     ptch '/foo', :update_foo2
 
     get %r{/foo/\d+}, :foo_regex
+
+    mount MOUNTED_ROUTER
   end
 
   def test_successful_lookups
@@ -31,6 +34,7 @@ class RouterTest < Test
       %w(GET /foo/1) => :foo_regex,
       %w(GET /foo/2) => :foo_regex,
       %w(GET /foo/3) => :foo_regex,
+      %w(GET /mounted) => :mounted,
     }.each do |req_args, expected_result|
       env = req(*req_args)
       expect ROUTER.lookup(env), :==, expected_result

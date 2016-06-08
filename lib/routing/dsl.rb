@@ -29,6 +29,10 @@ module Routing
       @routes << Namespace.new(prefix, Router.new(ns_routes))
     end
 
+    def mount(router)
+      @routes << router
+    end
+
     def make_root_router
       Router.new(@routes)
     end
