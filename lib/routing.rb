@@ -6,6 +6,7 @@ module Routing
   end
 end
 
+require 'routing/always'
 require 'routing/endpoint'
 require 'routing/namespace'
 require 'routing/router'

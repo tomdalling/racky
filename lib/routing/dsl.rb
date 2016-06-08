@@ -1,11 +1,16 @@
 module Routing
   class DSL
-    HTTP_VERBS = %w(GET HEAD POST PUT DELETE OPTIONS PATCH)
-
     def initialize
       @routes = []
     end
 
+    def make_root_router
+      Router.new(@routes)
+    end
+
+    # == DSL methods below =====
+
+    HTTP_VERBS = %w(GET HEAD POST PUT DELETE OPTIONS PATCH)
     HTTP_VERBS.each do |verb|
       define_method(verb.downcase) do |*args|
         route(verb, *args)
@@ -33,8 +38,8 @@ module Routing
       @routes << router
     end
 
-    def make_root_router
-      Router.new(@routes)
+    def always(target)
+      @routes << Always.new(target)
     end
   end
 end
