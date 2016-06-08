@@ -9,15 +9,4 @@ class Test < Minitest::Test
     else fail("Unhandled expectation: #{op}")
     end
   end
-
-  class ExpectWrapper
-    def initialize(actual, test)
-      @actual = actual
-      @test = test
-    end
-
-    def to_equal(expected)
-      @test.assert_equal(expected, @actual)
-    end
-  end
 end
