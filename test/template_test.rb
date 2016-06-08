@@ -3,9 +3,9 @@ require 'template'
 class TemplateTest < Test
   def test_rendering
     template = Template.new("Hello, <%= self %>!")
-    result = template.render('World')
+    result = template.render('"World>')
 
-    expect result, :==, 'Hello, World!'
+    expect result, :==, 'Hello, &quot;World&gt;!'
   end
 
   def test_errors
