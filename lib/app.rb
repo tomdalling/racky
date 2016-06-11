@@ -1,59 +1,37 @@
 require 'template'
 require 'routing'
+require 'controllers'
 
 class App
   ROUTER = Routing.define do
-    get  '/', to: :root
-    get  '/home', to: :home
+    get  '/', to: :home
     namespace '/auth' do
-      get  '/sign_in', to: :sign_in_form
-      post '/sign_in', to: :sign_in
+      get  '/sign_in', to: :sign_in_form, authenticate: false
+      post '/sign_in', to: :sign_in, authenticate: false
       post '/sign_out', to: :sign_out
     end
-    always to: :not_found
+    always to: :not_found, authenticate: false
   end
+
+  CONTROLLERS = {
+    home: Controllers::View.new(:home),
+    sign_in_form: Controllers::SignInForm.new,
+    sign_in: Controllers::SignIn.new,
+    sign_out: Controllers::SignOut.new,
+    not_found: Controllers::View.new(:'404', status: 404),
+    authentication_failed: Redirect.new('/auth/sign_in'),
+  }
 
   def call(env)
     route = ROUTER.lookup(env)
-    send(route.fetch(:to), env)
-  end
+    authenticate = route.fetch(:authenticate, true)
+    name = if CurrentUser.get(env) || !authenticate
+             route.fetch(:to)
+           else
+             :authentication_failed
+           end
 
-  def not_found(env)
-    view '404', {}, 404
-  end
-
-  def root(env)
-    redirect '/auth/sign_in'
-  end
-
-  def home(env)
-    view :home
-  end
-
-  def sign_in_form(env)
-    view :sign_in
-  end
-
-  def sign_in(env)
-    redirect '/home'
-  end
-
-  def sign_out(env)
-  end
-
-  def redirect(location)
-    [303, { 'Location' => location }, []]
-  end
-
-  def view(template_name, context={}, status=200)
-    ctx = context.is_a?(Hash) ? OpenStruct.new(context) : context
-    content = Template.render(template_name, ctx)
-    html = Template.render(:layout, OpenStruct.new(content: content))
-    [
-      status,
-      { 'Content-Type' => 'text/html' },
-      [html],
-    ]
+    CONTROLLERS.fetch(name).call(env)
   end
 
   def params(env)

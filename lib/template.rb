@@ -11,16 +11,14 @@ class Template
 
   #TODO: this should probably be moved to a separate class
   TEMPLATE_DIR = 'templates'
-  def self.render(name, context)
+  def self.get(name)
     name = name.to_sym
 
     @cache ||= {}
-    template = @cache.fetch(name) do
+    @cache.fetch(name) do
       path = File.join(TEMPLATE_DIR, "#{name}.erb")
       raw_source = File.read(path)
-      new(raw_source, path)
+      @cache[name] = new(raw_source, path)
     end
-
-    template.render(context)
   end
 end
