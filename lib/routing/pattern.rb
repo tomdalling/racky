@@ -1,8 +1,14 @@
 module Routing
   class Pattern
-    def initialize(str)
-      @parts = self.class.split(str)
+    attr_reader :parts, :regex
+
+    def initialize(parts)
+      @parts = parts
       @regex = self.class.regex(@parts)
+    end
+
+    def self.from_string(pattern)
+      new(split(pattern))
     end
 
     def match(path)

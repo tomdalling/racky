@@ -1,9 +1,13 @@
 class Routing::Always
-  def initialize(target)
-    @target = target
+  def initialize(options)
+    @options = options
   end
 
   def lookup(env)
-    @target
+    [{}, @options]
+  end
+
+  def lookup_pattern(name)
+    nil
   end
 end

@@ -4,13 +4,13 @@ require 'controllers'
 
 class App
   ROUTER = Routing.define do
-    get  '/', to: :home
+    get  '/', name: :root
     namespace '/auth' do
-      get  '/sign_in', to: :sign_in_form
-      post '/sign_in', to: :sign_in
-      post '/sign_out', to: :sign_out
+      get  '/sign_in', name: :sign_in_form
+      post '/sign_in', name: :sign_in
+      post '/sign_out', name: :sign_out
     end
-    always to: :not_found
+    always name: :not_found
   end
 
   PUBLIC_CONTROLLERS = {
@@ -20,7 +20,7 @@ class App
   }
 
   AUTHENTICATED_CONTROLLERS = {
-    home: Controllers::View.new(:home),
+    root: Controllers::View.new(:home),
     sign_out: Controllers::SignOut.new,
   }
     .map { |name, controller| [name, Controllers::Authenticator.new(controller)] }
@@ -30,7 +30,7 @@ class App
 
   def call(env)
     captures, route = ROUTER.lookup(env)
-    name = route.fetch(:to)
+    name = route.fetch(:name)
     CONTROLLERS.fetch(name).call(env)
   end
 end

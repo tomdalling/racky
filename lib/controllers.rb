@@ -27,17 +27,20 @@ module Controllers
   end
 
   class Redirect
-    def initialize(location)
-      @location = location
+    def initialize(route_name)
+      @route_name = route_name
     end
 
-    def call(env)
-      [303, { 'Location' => @location }, []]
+    def call(env, vars={})
+      @pattern ||= ::App::ROUTER.lookup_pattern(@route_name)
+      fail "Could not find route named #{@route_name.inspect}" unless @pattern
+
+      [303, { 'Location' => @pattern.construct_path(vars) }, []]
     end
   end
 
   class Authenticator
-    FAILURE = Redirect.new('/auth/sign_in')
+    FAILURE = Redirect.new(:sign_in)
 
     def initialize(controller)
       @controller = controller
@@ -55,7 +58,7 @@ module Controllers
   end
 
   class SignInForm
-    REDIRECT = Redirect.new('/')
+    REDIRECT = Redirect.new(:root)
     VIEW = View.new(:sign_in)
 
     def call(env)
@@ -68,7 +71,7 @@ module Controllers
   end
 
   class SignIn
-    SUCCESS_REDIRECT = Redirect.new('/')
+    SUCCESS_REDIRECT = Redirect.new(:root)
     PARAMS = Params.define(
       username: String,
       password: String,

@@ -20,8 +20,8 @@ module Routing
     alias_method :opts, :options
     alias_method :ptch, :patch
 
-    def route(method, path, target)
-      @routes << Endpoint.new(method, path, target)
+    def route(method, pattern, target)
+      @routes << Endpoint.new(method, pattern, target)
     end
 
     def namespace(prefix)

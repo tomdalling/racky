@@ -57,6 +57,10 @@ class ExpectationWrapper
     @test.assert_nil(@value)
   end
 
+  def is_not_nil
+    @test.refute_nil(@value)
+  end
+
   def includes(*elements)
     elements.each do |e|
       @test.assert_includes(@value, e)
