@@ -37,7 +37,7 @@ class RouterTest < Test
       %w(GET /mounted) => :mounted,
     }.each do |req_args, expected_result|
       env = req(*req_args)
-      expect ROUTER.lookup(env), :==, expected_result
+      expect(ROUTER.lookup(env)) == expected_result
     end
   end
 
@@ -51,7 +51,7 @@ class RouterTest < Test
       %w(GET /foo/),
     ].each do |req_args|
       env = req(*req_args)
-      expect ROUTER.lookup(env), :is_nil
+      expect(ROUTER.lookup(env)).is_nil
     end
   end
 

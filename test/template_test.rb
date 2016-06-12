@@ -5,7 +5,7 @@ class TemplateTest < Test
     template = Template.new("Hello, <%= self %>!")
     result = template.render('"World>')
 
-    expect result, :==, 'Hello, &quot;World&gt;!'
+    expect(result) == 'Hello, &quot;World&gt;!'
   end
 
   def test_errors
@@ -17,8 +17,8 @@ class TemplateTest < Test
 
     ex = assert_raises { template.render }
 
-    expect ex, :is_a, NameError
-    expect ex.message, :includes, 'unicorn'
-    expect ex.backtrace.first, :starts_with, 'lib/whatever.rb:2'
+    expect(ex).is_a NameError
+    expect(ex.message).includes 'unicorn'
+    expect(ex.backtrace.first).starts_with 'lib/whatever.rb:2'
   end
 end

@@ -1,4 +1,11 @@
 require 'current_user'
+require 'params'
+
+# Temporary in-memory DB.
+# TODO: remove this later
+USERS = [
+  { id: 1, username: 'admin', password: '123' },
+]
 
 module Controllers
   class View
@@ -8,8 +15,8 @@ module Controllers
       @status = options.fetch(:status, 200)
     end
 
-    def call(env)
-      content = @template.render
+    def call(env, template_args=nil)
+      content = @template.render(template_args)
       html = @layout.render(OpenStruct.new(content: content))
       [
         @status,
@@ -29,15 +36,6 @@ module Controllers
     end
   end
 
-  class SignIn
-    REDIRECT = Redirect.new('/')
-
-    def call(env)
-      CurrentUser.set(env, 123)
-      REDIRECT.call(env)
-    end
-  end
-
   class SignInForm
     REDIRECT = Redirect.new('/')
     VIEW = View.new(:sign_in)
@@ -46,7 +44,26 @@ module Controllers
       if CurrentUser.get(env)
         REDIRECT.call(env)
       else
-        VIEW.call(env)
+        VIEW.call(env, error: nil)
+      end
+    end
+  end
+
+  class SignIn
+    REDIRECT = Redirect.new('/')
+
+    def call(env)
+      params = Params.require!(env, {
+        username: String,
+        password: String,
+      })
+      user = USERS.find{ |u| u[:username] == params[:username] }
+
+      if user && user[:password] == params[:password]
+        CurrentUser.set(env, user[:id])
+        REDIRECT.call(env)
+      else
+        SignInForm::VIEW.call(env, error: 'Username or password was incorrect')
       end
     end
   end

@@ -1,4 +1,11 @@
 <h1>Sign In</h1>
+
+<% if error %>
+  <div class="alert alert-danger">
+    <%= error %>
+  </div>
+<% end %>
+
 <form action="/auth/sign_in" method="POST">
   <div class="form-group">
     <label>Username</label>

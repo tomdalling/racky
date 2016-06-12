@@ -19,7 +19,7 @@ class App
     sign_in: Controllers::SignIn.new,
     sign_out: Controllers::SignOut.new,
     not_found: Controllers::View.new(:'404', status: 404),
-    authentication_failed: Redirect.new('/auth/sign_in'),
+    authentication_failed: Controllers::Redirect.new('/auth/sign_in'),
   }
 
   def call(env)
@@ -32,18 +32,5 @@ class App
            end
 
     CONTROLLERS.fetch(name).call(env)
-  end
-
-  def params(env)
-    case
-    when env['QUERY_STRING'].length > 0
-      Rack::Utils.parse_nested_query(env['QUERY_STRING'])
-    when env['CONTENT_TYPE'] == 'application/x-www-form-urlencoded'
-      body = env['rack.input']
-      body.rewind
-      Rack::Utils.parse_nested_query(body.read)
-    else
-      {}
-    end
   end
 end

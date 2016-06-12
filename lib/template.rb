@@ -6,7 +6,9 @@ class Template
   end
 
   def render(context=nil)
-    @erb.evaluate(context)
+    # don't pass hashes directly into the template, because erubis
+    # converts them to some wierd Eribus::Context object
+    @erb.evaluate(context.is_a?(Hash) ? OpenStruct.new(context) : context)
   end
 
   #TODO: this should probably be moved to a separate class
