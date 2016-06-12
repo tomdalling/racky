@@ -36,12 +36,30 @@ module Controllers
     end
   end
 
+  class Authenticator
+    FAILURE = Redirect.new('/auth/sign_in')
+
+    def initialize(controller)
+      @controller = controller
+    end
+
+    def call(env)
+      uid = Session.get(env, 'user_id')
+      user = uid && USERS.find{ |u| u[:id] == uid }
+      if user
+        @controller.call(env.merge(racky_current_user: user))
+      else
+        FAILURE.call(env)
+      end
+    end
+  end
+
   class SignInForm
     REDIRECT = Redirect.new('/')
     VIEW = View.new(:sign_in)
 
     def call(env)
-      if Session.get(env, 'user_id')
+      if env[:racky_current_user]
         REDIRECT.call(env)
       else
         VIEW.call(env, error: nil)
@@ -73,8 +91,8 @@ module Controllers
     VIEW = View.new(:signed_out)
 
     def call(env)
-      Session.set(env, 'user_id' => nil)
-      VIEW.call(env)
+      Session.clear(env)
+      VIEW.call(env, user: env[:racky_current_user])
     end
   end
 end

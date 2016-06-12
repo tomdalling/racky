@@ -14,4 +14,8 @@ module Session
       session[key] = value
     end
   end
+
+  def self.clear(env)
+    get(env).clear
+  end
 end
