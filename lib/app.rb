@@ -29,7 +29,7 @@ class App
   CONTROLLERS = PUBLIC_CONTROLLERS.merge(AUTHENTICATED_CONTROLLERS)
 
   def call(env)
-    route, captures = ROUTER.lookup(env)
+    captures, route = ROUTER.lookup(env)
     name = route.fetch(:to)
     CONTROLLERS.fetch(name).call(env)
   end
