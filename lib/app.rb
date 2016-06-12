@@ -25,7 +25,7 @@ class App
   def call(env)
     route = ROUTER.lookup(env)
     authenticate = route.fetch(:authenticate, true)
-    name = if CurrentUser.get(env) || !authenticate
+    name = if Session.get(env, 'user_id') || !authenticate
              route.fetch(:to)
            else
              :authentication_failed

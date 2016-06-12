@@ -20,16 +20,26 @@ module Params
     :bool => Coercidator::BoolSchema,
   )
 
-  class RequirementError < StandardError; end
-
-  def self.require!(env, uncompiled_schema)
+  def self.define(uncompiled_schema)
     schema = SCHEMA_COMPILER.compile(uncompiled_schema)
-    params = get(env)
-    result = schema.coercidate(params)
-    if result.failures.empty?
-      result.value
-    else
-      raise RequirementError, Coercidator::FailureExplainer.call(result.failures)
+    Definition.new(schema)
+  end
+
+  class InvalidParamsError < StandardError; end
+
+  class Definition
+    def initialize(schema)
+      @schema = schema
+    end
+
+    def get!(env)
+      params = Params.get(env)
+      result = @schema.coercidate(params)
+      if result.failures.empty?
+        result.value
+      else
+        raise InvalidParamsError, Coercidator::FailureExplainer.call(result.failures)
+      end
     end
   end
 end
