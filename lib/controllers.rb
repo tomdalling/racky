@@ -1,5 +1,6 @@
 require 'session'
 require 'params'
+require 'convenience/controller'
 
 # Temporary in-memory DB.
 # TODO: remove this later
@@ -70,22 +71,20 @@ module Controllers
     end
   end
 
-  class SignIn
-    SUCCESS_REDIRECT = Redirect.new(:root)
-    PARAMS = Params.define(
+  class SignIn < Convenience::Controller
+    define_params(
       username: String,
       password: String,
     )
 
-    def call(env)
-      params = PARAMS.get!(env)
+    def call
       user = USERS.find{ |u| u[:username] == params[:username] }
 
       if user && user[:password] == params[:password]
-        Session.set(env, 'user_id' => user[:id])
-        SUCCESS_REDIRECT.call(env)
+        session['user_id'] = user[:id]
+        redirect(:root)
       else
-        SignInForm::VIEW.call(env, error: 'Username or password was incorrect')
+        view(:sign_in, error: 'Username or password was incorrect')
       end
     end
   end

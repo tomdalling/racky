@@ -16,7 +16,7 @@ class App
   PUBLIC_CONTROLLERS = {
     not_found: Controllers::View.new(:'404', status: 404),
     sign_in_form: Controllers::SignInForm.new,
-    sign_in: Controllers::SignIn.new,
+    sign_in: Controllers::SignIn,
   }
 
   AUTHENTICATED_CONTROLLERS = {
