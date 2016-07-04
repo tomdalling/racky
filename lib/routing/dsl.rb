@@ -5,7 +5,7 @@ module Routing
     end
 
     def make_root_router
-      Router.new(@routes)
+      RouteSet.new(@routes)
     end
 
     # == DSL methods below =====
@@ -31,7 +31,7 @@ module Routing
       ns_routes = @routes
       @routes = old_routes
 
-      @routes << Namespace.new(prefix, Router.new(ns_routes))
+      @routes << Namespace.new(prefix, RouteSet.new(ns_routes))
     end
 
     def mount(router)

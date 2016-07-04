@@ -1,9 +1,16 @@
 require 'template'
 require 'routing'
 require 'controllers'
+require 'middleware'
+require 'dry/component/container'
 
-class App
-  ROUTER = Routing.define do
+class App < Dry::Component::Container
+  configure do |config|
+    config.root = Pathname.new(File.expand_path('../..', __FILE__))
+    config.auto_register = 'lib'
+  end
+
+  register('routes', Routing.define do
     get  '/', name: :root
     namespace '/auth' do
       get  '/sign_in', name: :sign_in_form
@@ -11,26 +18,36 @@ class App
       post '/sign_out', name: :sign_out
     end
     always name: :not_found
-  end
+  end)
 
-  PUBLIC_CONTROLLERS = {
+  register 'controllers', {
+    # authentication not required
     not_found: Controllers::View.new(:'404', status: 404),
     sign_in_form: Controllers::SignInForm.new,
     sign_in: Controllers::SignIn,
-  }
 
-  AUTHENTICATED_CONTROLLERS = {
+    # authentication required
     root: Controllers::View.new(:home),
     sign_out: Controllers::SignOut.new,
   }
-    .map { |name, controller| [name, Controllers::Authenticator.new(controller)] }
-    .to_h
 
-  CONTROLLERS = PUBLIC_CONTROLLERS.merge(AUTHENTICATED_CONTROLLERS)
+  register 'root_app' do
+    Rack::Builder.new do
+      use Rack::Session::Cookie,
+        key: Session::COOKIE_NAME,
+        secret: '#TODO: change_me',
+        coder: Rack::Session::Cookie::Base64::ZipJSON.new
 
-  def call(env)
-    captures, route = ROUTER.lookup(env)
-    name = route.fetch(:name)
-    CONTROLLERS.fetch(name).call(env)
+      use Middleware::RouteLookup,
+        route_set: App['routes']
+
+      use Middleware::Authentication,
+        failure_app: Controllers::Redirect.new(:sign_in_form),
+        bypass_routes: [:not_found, :sign_in_form, :sign_in]
+
+      run Controllers::Router.new(App['controllers'])
+    end
   end
+
+  finalize!
 end

@@ -41,7 +41,7 @@ module Coercidator
           if key
             result.failures.map { |f| f.with_extended_path(key) }
           else
-            result.failures.dup
+            result.failures
           end
         )
       end

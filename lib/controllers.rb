@@ -9,11 +9,22 @@ USERS = [
 ]
 
 module Controllers
+  class Router
+    def initialize(controllers)
+      @controllers = controllers
+    end
+
+    def call(env)
+      route_name = env.fetch('racky.route.name')
+      @controllers[route_name].call(env)
+    end
+  end
+
   class View
-    def initialize(view_name, options={})
+    def initialize(view_name, layout: :layout, status: 200)
       @template = Template.get(view_name)
-      @layout = Template.get(options.fetch(:layout, :layout))
-      @status = options.fetch(:status, 200)
+      @layout = Template.get(layout)
+      @status = status
     end
 
     def call(env, template_args=nil)
@@ -33,28 +44,10 @@ module Controllers
     end
 
     def call(env, vars={})
-      @pattern ||= ::App::ROUTER.lookup_pattern(@route_name)
+      @pattern ||= ::App['routes'].lookup_pattern(@route_name)
       fail "Could not find route named #{@route_name.inspect}" unless @pattern
 
       [303, { 'Location' => @pattern.construct_path(vars) }, []]
-    end
-  end
-
-  class Authenticator
-    FAILURE = Redirect.new(:sign_in)
-
-    def initialize(controller)
-      @controller = controller
-    end
-
-    def call(env)
-      uid = Session.get(env, 'user_id')
-      user = uid && USERS.find{ |u| u[:id] == uid }
-      if user
-        @controller.call(env.merge(racky_current_user: user))
-      else
-        FAILURE.call(env)
-      end
     end
   end
 
@@ -63,7 +56,7 @@ module Controllers
     VIEW = View.new(:sign_in)
 
     def call(env)
-      if env[:racky_current_user]
+      if env.fetch('racky.authentication.user')
         REDIRECT.call(env)
       else
         VIEW.call(env, error: nil)
@@ -94,7 +87,7 @@ module Controllers
 
     def call(env)
       Session.clear(env)
-      VIEW.call(env, user: env[:racky_current_user])
+      VIEW.call(env, user: env.fetch('racky.authentication.user'))
     end
   end
 end
