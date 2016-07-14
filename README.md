@@ -10,6 +10,8 @@ Aims
    The majority of the app should be deep frozen at run time.
  - Exceptions are only for _unexpected_ bad situations, not for control flow.
    Expect all raised exceptions to cause a HTTP 500 response.
+ - Decoupled design is more important than convenience.
+ - Any conveniences (e.g. a stateful Rails-like controller base class) should be _thin_ and _optional_.
 
 Web Layer
 ---------
