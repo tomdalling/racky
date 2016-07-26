@@ -187,10 +187,6 @@ module Routing
     attr_reader :app_resolver
 
     def initialize(app_resolver = IdentityResolver)
-      if app_resolver.nil?
-        raise ArgumentError, "#{self.class.name} requires a resolver"
-      end
-
       @app_resolver = app_resolver
       @stack = []
     end
@@ -203,13 +199,13 @@ module Routing
 
     def group(&definition_block)
       route = define(&definition_block)
-      _mount!(route)
+      mount(route)
     end
 
     def namespace(prefix, &definition_block)
       subroute = define(&definition_block)
       ns = Namespace.new(prefix, subroute)
-      _mount!(ns)
+      mount(ns)
     end
 
     def get(pattern_to_app)
@@ -223,26 +219,22 @@ module Routing
     def endpoint(http_method, pattern_to_app)
       pattern_to_app.each do |pattern_format, unresolved_app|
         pattern = Pattern.from_string(pattern_format)
-        app = resolve(unresolved_app)
+        app = _resolve(unresolved_app)
         endpoint = Endpoint.new(http_method, pattern, app)
-        _mount!(endpoint)
+        mount(endpoint)
       end
     end
 
-    def mount(unresolved_app)
-      _mount!(resolve(unresolved_app))
+    def always(unresolved_app)
+      mount(_resolve(unresolved_app))
+    end
+
+    def mount(app)
+      _stack_top(:subapps) << app
     end
 
     def middleware(klass, *args)
       _stack_top(:middlewares) << MiddlewareDef.new(klass, args)
-    end
-
-    def resolve(unresolved_app)
-      result = @app_resolver[unresolved_app]
-      unless result
-        raise UnresolvedApp, "Can't resolve app: #{unresolved_app.inspect}"
-      end
-      result
     end
 
     module IdentityResolver
@@ -252,6 +244,14 @@ module Routing
     end
 
     private
+
+      def _resolve(unresolved_app)
+        result = @app_resolver[unresolved_app]
+        unless result
+          raise UnresolvedApp, "Can't resolve app: #{unresolved_app.inspect}"
+        end
+        result
+      end
 
       def _push
         @stack << { subapps: [], middlewares: [] }
@@ -273,10 +273,6 @@ module Routing
       def _stack_top(key)
         raise ArgumentError if @stack.empty?
         @stack.last.fetch(key)
-      end
-
-      def _mount!(app)
-        _stack_top(:subapps) << app
       end
 
       def _wrap_middlewares(middleware_defs, final_app)

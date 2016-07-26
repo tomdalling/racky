@@ -9,17 +9,6 @@ USERS = [
 ]
 
 module Controllers
-  class Router
-    def initialize(controllers)
-      @controllers = controllers
-    end
-
-    def call(env)
-      route_name = env.fetch('racky.route.name')
-      @controllers[route_name].call(env)
-    end
-  end
-
   class View
     def initialize(view_name, layout: :layout, status: 200)
       @template = Template.get(view_name)
@@ -39,20 +28,17 @@ module Controllers
   end
 
   class Redirect
-    def initialize(route_name)
-      @route_name = route_name
+    def initialize(location)
+      @location = location
     end
 
-    def call(env, vars={})
-      @pattern ||= ::App['routes'].lookup_pattern(@route_name)
-      fail "Could not find route named #{@route_name.inspect}" unless @pattern
-
-      [303, { 'Location' => @pattern.construct_path(vars) }, []]
+    def call(env)
+      [303, { 'Location' => @location }, []]
     end
   end
 
   class SignInForm
-    REDIRECT = Redirect.new(:root)
+    REDIRECT = Redirect.new('/')
     VIEW = View.new(:sign_in)
 
     def call(env)
@@ -75,7 +61,7 @@ module Controllers
 
       if user && user[:password] == params[:password]
         session['user_id'] = user[:id]
-        redirect(:root)
+        redirect('/')
       else
         view(:sign_in, error: 'Username or password was incorrect')
       end

@@ -124,7 +124,7 @@ module PigeonRoutingTests
           get  '/sign_in' => :sign_in_form
           post '/sign_in' => :sign_in
           post '/sign_out' => :sign_out
-          mount :auth_not_found
+          always :auth_not_found
         end
 
         group do
@@ -132,7 +132,7 @@ module PigeonRoutingTests
           get  '/' => :home
         end
 
-        mount :not_found
+        always :not_found
       end
     end
 
