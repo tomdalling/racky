@@ -30,7 +30,7 @@ ALL_ROUTES = Routing.define do
 
   mount AUTH_ROUTES
 
-  subrouter do
+  group do
     middleware EnforceAuthenticated
     get  '/' => :home
   end
@@ -193,14 +193,11 @@ module R2
     end
 
     def group(&definition_block)
-      _subapps << define(&definition_block)
+      mount define(&definition_block)
     end
 
     def namespace(prefix, &definition_block)
-      _push
-      instance_eval(&definition_block)
-      router = _pop
-
+      router = define(&definition_block)
       mount Namespace.new(prefix, router)
     end
 
@@ -215,18 +212,17 @@ module R2
     def endpoint(http_method, pattern_to_app)
       pattern_to_app.each do |pattern_format, app_id|
         pattern = Pattern.from_string(pattern_format)
-        final_app = resolve(app_id)
-        app = _wrap_middlewares(_all_middlewares, final_app)
+        app = resolve(app_id)
         mount Endpoint.new(http_method, pattern, app)
       end
     end
 
     def mount(app_id)
-      _subapps << resolve(app_id)
+      _stack_top(:subapps) << resolve(app_id)
     end
 
     def middleware(klass, *args)
-      _top_middlewares << [klass, args]
+      _stack_top(:middlewares) << MiddlewareDef.new(klass, args)
     end
 
     def resolve(app_id)
@@ -251,33 +247,28 @@ module R2
       def _pop
         raise ArgumentError if @stack.empty?
 
-        router = (_subapps.count == 1 ? _subapps.first : Router.new(_subapps))
+        subapps = _stack_top(:subapps)
+        middlewares = _stack_top(:middlewares)
+        router = (subapps.count == 1 ? subapps.first : Router.new(subapps))
+        wrapped_router = _wrap_middlewares(middlewares, router)
 
         @stack.pop
 
-        router
+        wrapped_router
       end
 
-      def _subapps
+      def _stack_top(key)
         raise ArgumentError if @stack.empty?
-        @stack.last.fetch(:subapps)
+        @stack.last.fetch(key)
       end
 
-      def _all_middlewares
-        raise ArgumentError if @stack.empty?
-        @stack.flat_map{ |top| top.fetch(:middlewares) }
-      end
-
-      def _top_middlewares
-        raise ArgumentError if @stack.empty?
-        @stack.last.fetch(:middlewares)
-      end
-
-      def _wrap_middlewares(middlewares, final_app)
-        middlewares.reverse.reduce(final_app) do |next_app, (mw_class, mw_args)|
-          mw_class.new(next_app, *mw_args)
+      def _wrap_middlewares(middleware_defs, final_app)
+        middleware_defs.reverse.reduce(final_app) do |next_app, mw_def|
+          mw_def.klass.new(next_app, *(mw_def.args))
         end
       end
+
+      MiddlewareDef = Struct.new(:klass, :args)
   end
 
 end

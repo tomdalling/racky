@@ -4,10 +4,10 @@ require 'r2'
 #TODO: this probably shouldn't be global
 module Req
   def self.[](method_and_path)
-    method, _, path = method_and_path.partition(' ')
+    method, _, path = method_and_path.partition(/\s+/)
     {
-      'REQUEST_METHOD' => method,
-      'PATH_INFO' => path
+      'REQUEST_METHOD' => method.strip,
+      'PATH_INFO' => path.strip
     }
   end
 end
@@ -133,10 +133,11 @@ class R2DSLTest < Test
     routes = @dsl.define do
       middleware MockMiddleware, :mw_outside
 
-      namespace('/auth') do
+      namespace '/auth' do
         get  '/sign_in' => :sign_in_form
         post '/sign_in' => :sign_in
         post '/sign_out' => :sign_out
+        mount :auth_not_found
       end
 
       group do
@@ -148,12 +149,11 @@ class R2DSLTest < Test
     end
 
     {
-      #TODO: these '/auth' routes should have the :mw_outside middleware
-      'GET /auth/sign_in' => ':mw_outside -> :sign_in_form',
-      'POST /auth/sign_in' => ':mw_outside -> :sign_in',
-      'GET /auth/sign_out' => ':not_found',
-      'GET /' => ':mw_outside -> :mw_inside -> :home',
-      'GET /blah' => ':not_found',
+      'GET  /auth/sign_in'  => ':mw_outside -> :sign_in_form',
+      'POST /auth/sign_in'  => ':mw_outside -> :sign_in',
+      'GET  /auth/sign_out' => ':mw_outside -> :auth_not_found',
+      'GET  /'              => ':mw_outside -> :mw_inside -> :home',
+      'GET  /blah'          => ':mw_outside -> :not_found',
     }.each do |request, expected_response|
       response = routes.call(Req[request])
       expect(response) == expected_response
@@ -169,9 +169,10 @@ class R2DSLTest < Test
     end
 
     def call(env)
-      env['mock_middleware'] ||= []
-      env['mock_middleware'] << @name
-      @next_app.call(env)
+      subenv = env.dup
+      subenv['mock_middleware'] ||= []
+      subenv['mock_middleware'] += [@name]
+      @next_app.call(subenv)
     end
   end
 end
