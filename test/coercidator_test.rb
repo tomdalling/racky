@@ -1,7 +1,7 @@
-require 'test_helper'
+require 'unit_test'
 require 'coercidator'
 
-class CoercidatorTest < Test
+class CoercidatorTest < UnitTest
   def test_failure
     f = Coercidator::Failure.new(:coerc, 5, :not_6, "It wasn't six")
     f2 = f.with_extended_path('hello')

@@ -1,4 +1,5 @@
 require 'erubis'
+require 'ostruct'
 
 class Template
   def initialize(raw_source, filename='(ERB)')

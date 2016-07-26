@@ -1,7 +1,7 @@
-require 'test_helper'
+require 'unit_test'
 require 'template'
 
-class TemplateTest < Test
+class TemplateTest < UnitTest
   def test_rendering
     template = Template.new("Hello, <%= self %>!")
     result = template.render('"World>')

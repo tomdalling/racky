@@ -1,9 +1,9 @@
-require 'test_helper'
+require 'unit_test'
 require 'pigeon/routing'
 require 'ice_nine'
 
 module PigeonRoutingTests
-  class PatternTest < Test
+  class PatternTest < UnitTest
     def test_split
       {
         ':foo:bar' => [:foo, :bar],
@@ -36,7 +36,7 @@ module PigeonRoutingTests
     end
   end
 
-  class EndpointTest < Test
+  class EndpointTest < UnitTest
     def setup
       pattern = Pigeon::Routing::Pattern.from_string('/foo/:id.:format')
       next_app = proc do |env|
@@ -77,7 +77,7 @@ module PigeonRoutingTests
     end
   end
 
-  class RouterTest < Test
+  class RouterTest < UnitTest
     def test_routing
       did_run = []
       app_1 = proc { |env| did_run << :app_1; nil }
@@ -91,7 +91,7 @@ module PigeonRoutingTests
     end
   end
 
-  class NamespaceTest < Test
+  class NamespaceTest < UnitTest
     def setup
       next_app = proc { |env| "Hi from #{env['PATH_INFO']}" }
       @namespace = Pigeon::Routing::Namespace.new('/auth', next_app)
@@ -108,7 +108,7 @@ module PigeonRoutingTests
     end
   end
 
-  class DSLTest < Test
+  class DSLTest < UnitTest
     def setup
       resolver = proc do |key|
         proc do |env|
