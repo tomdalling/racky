@@ -10,9 +10,11 @@ Router API Ideas
    controller object, possibly using dry-container.
 
  - Middleware declarations are hoisted, meaning that they apply to all routes
-   within the current router/subrouter
+   within the current router/group
 
  - _Any_ rack-compatible app can be mounted into any router.
+
+ - Routing tree can be frozen at run time.
 
 Example Code
 ------------
@@ -43,8 +45,9 @@ IceNine.deep_freeze(ALL_ROUTES)
 =end
 
 
-module R2
-  ROUTING_CAPTURES_ENV_KEY = 'racky.routing_captures'
+module Pigeon
+module Routing
+  CAPTURES_ENV_KEY = 'pigeon.routing.captures'
 
   class Pattern
     attr_reader :parts, :regex
@@ -130,7 +133,7 @@ module R2
       captures = @pattern.match(env.fetch('PATH_INFO'))
       return nil unless captures
 
-      next_env = env.merge(ROUTING_CAPTURES_ENV_KEY => captures) do
+      next_env = env.merge(CAPTURES_ENV_KEY => captures) do
         |_, old_caps, new_caps|
         old_caps.merge(new_caps)
       end
@@ -179,9 +182,15 @@ module R2
   end
 
   class DSL
-    class UnresolvedRoutingIdentifier < StandardError; end
+    class UnresolvedApp < StandardError; end
 
-    def initialize(app_resolver)
+    attr_reader :app_resolver
+
+    def initialize(app_resolver = IdentityResolver)
+      if app_resolver.nil?
+        raise ArgumentError, "#{self.class.name} requires a resolver"
+      end
+
       @app_resolver = app_resolver
       @stack = []
     end
@@ -193,12 +202,14 @@ module R2
     end
 
     def group(&definition_block)
-      mount define(&definition_block)
+      route = define(&definition_block)
+      _mount!(route)
     end
 
     def namespace(prefix, &definition_block)
-      router = define(&definition_block)
-      mount Namespace.new(prefix, router)
+      subroute = define(&definition_block)
+      ns = Namespace.new(prefix, subroute)
+      _mount!(ns)
     end
 
     def get(pattern_to_app)
@@ -210,32 +221,34 @@ module R2
     end
 
     def endpoint(http_method, pattern_to_app)
-      pattern_to_app.each do |pattern_format, app_id|
+      pattern_to_app.each do |pattern_format, unresolved_app|
         pattern = Pattern.from_string(pattern_format)
-        app = resolve(app_id)
-        mount Endpoint.new(http_method, pattern, app)
+        app = resolve(unresolved_app)
+        endpoint = Endpoint.new(http_method, pattern, app)
+        _mount!(endpoint)
       end
     end
 
-    def mount(app_id)
-      _stack_top(:subapps) << resolve(app_id)
+    def mount(unresolved_app)
+      _mount!(resolve(unresolved_app))
     end
 
     def middleware(klass, *args)
       _stack_top(:middlewares) << MiddlewareDef.new(klass, args)
     end
 
-    def resolve(app_id)
-      unless app_id.is_a?(Symbol) || app_id.is_a?(String)
-        # if it's not a symbol or string, assume it's already an app object
-        return app_id
-      end
-
-      result = @app_resolver[app_id]
+    def resolve(unresolved_app)
+      result = @app_resolver[unresolved_app]
       unless result
-        raise UnresolvedRoutingIdentifier, "Can't resolve routing idenfitier: #{app_id.inspect}"
+        raise UnresolvedApp, "Can't resolve app: #{unresolved_app.inspect}"
       end
       result
+    end
+
+    module IdentityResolver
+      def self.[](app)
+        app
+      end
     end
 
     private
@@ -262,6 +275,10 @@ module R2
         @stack.last.fetch(key)
       end
 
+      def _mount!(app)
+        _stack_top(:subapps) << app
+      end
+
       def _wrap_middlewares(middleware_defs, final_app)
         middleware_defs.reverse.reduce(final_app) do |next_app, mw_def|
           mw_def.klass.new(next_app, *(mw_def.args))
@@ -271,4 +288,5 @@ module R2
       MiddlewareDef = Struct.new(:klass, :args)
   end
 
-end
+end # module Routing
+end # module Pigeon
