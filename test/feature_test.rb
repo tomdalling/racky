@@ -3,7 +3,7 @@ require 'expectations'
 require 'capybara/dsl'
 require 'app'
 
-Capybara.app = App['root_app']
+Capybara.app = App
 
 class FeatureTest < Minitest::Test
   include Expectations
@@ -15,8 +15,8 @@ class FeatureTest < Minitest::Test
     super
   end
 
-  def assert_path(path)
-    assert_equal path, current_path
+  def assert_path(path, msg=nil)
+    assert_equal path, current_path, msg
   end
 
   def sign_in!
@@ -31,11 +31,11 @@ class FeatureTest < Minitest::Test
 
   def visit(path)
     super(path)
-    assert_path(path)
+    assert_path(path, "Failed to visit path: #{path}")
   end
 
   def assert_page(method, *args)
-    msg = "page.#{method}(#{args.map(&:inspect).join(', ')})"
+    msg = "Failed: page.#{method}(#{args.map(&:inspect).join(', ')})"
     assert page.send(method, *args), msg
   end
 end

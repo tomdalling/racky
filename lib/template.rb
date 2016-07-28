@@ -11,17 +11,4 @@ class Template
     # converts them to some wierd Eribus::Context object
     @erb.evaluate(context.is_a?(Hash) ? OpenStruct.new(context) : context)
   end
-
-  #TODO: this should probably be moved to a separate class
-  TEMPLATE_DIR = 'templates'
-  def self.get(name)
-    name = name.to_sym
-
-    @cache ||= {}
-    @cache.fetch(name) do
-      path = File.join(TEMPLATE_DIR, "#{name}.erb")
-      raw_source = File.read(path)
-      @cache[name] = new(raw_source, path)
-    end
-  end
 end

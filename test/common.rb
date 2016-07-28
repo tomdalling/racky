@@ -7,3 +7,4 @@ $LOAD_PATH.unshift(File.expand_path('lib', ROOT_DIR))
 
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'pry'

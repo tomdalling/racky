@@ -191,6 +191,12 @@ module Routing
       @stack = []
     end
 
+    def eval_file(path)
+      _push
+      instance_eval(File.read(path), path.to_s, 1)
+      _pop
+    end
+
     def define(&definition_block)
       _push
       instance_eval(&definition_block)
