@@ -1,14 +1,22 @@
 module Queries
   class Work
-    # TODO: get a real DB in here
-    #include App::Inject[]
+    include App::Inject['db']
 
     def featured
-      OpenStruct.new(title: 'Featured Peatured')
+      OpenStruct.new(
+        db[:works]
+          .exclude(featured_at: nil)
+          .order_by(:featured_at)
+          .last
+      )
     end
 
     def latest
-      OpenStruct.new(title: 'Latest Baitest')
+      OpenStruct.new(
+        db[:works]
+          .order(:published_at)
+          .last
+      )
     end
   end
 end

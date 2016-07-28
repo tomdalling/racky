@@ -27,6 +27,18 @@ class FeatureTest < Minitest::Test
     assert_path '/'
   end
 
+  def db
+    App['db']
+  end
+
+  def create_records!(records)
+    records.each do |table, attr_list|
+      Array(attr_list).each do |attrs|
+        db[table].insert(attrs)
+      end
+    end
+  end
+
   alias_method :try_visit, :visit
 
   def visit(path)

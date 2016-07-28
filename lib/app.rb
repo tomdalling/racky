@@ -1,6 +1,8 @@
 require 'template'
 require 'dry/component/container'
 require 'pigeon/routing'
+require 'session'
+require 'sequel'
 
 class App < Dry::Component::Container
   ROOT = Pathname.new(__FILE__).dirname.dirname
@@ -9,6 +11,13 @@ class App < Dry::Component::Container
   configure do |config|
     config.root = ROOT
     config.auto_register = ['app/controllers', 'app/repos', 'app/queries']
+  end
+
+  begin # DB
+    db = Sequel.sqlite(':memory:')
+    schema_path = ROOT + 'app/schema.rb'
+    db.instance_eval(schema_path.read, schema_path.to_s, 1)
+    register('db', db)
   end
 
   namespace 'templates' do

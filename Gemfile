@@ -5,6 +5,8 @@ group :production do
   gem 'erubis', '~> 2.7.0'
   gem 'dry-component', '~> 0.3.0'
   gem 'ice_nine', '~> 0.11.2'
+  gem 'sequel', '~> 4.36.0'
+  gem 'sqlite3', '~> 1.3.11'
 end
 
 group :test do

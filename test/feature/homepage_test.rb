@@ -2,9 +2,10 @@ require 'feature_test'
 
 class HomepageTest < FeatureTest
   def test_content
-    App['repos.work'].create([
+    create_records!(works: [
+      { title: 'Old Mold', featured_at: Time.now - 5 },
       { title: 'Featured Peatured', featured_at: Time.now },
-      { title: 'Latest Baitest' },
+      { title: 'Latest Baitest', published_at: Time.now + 7 },
     ])
 
     visit '/'
