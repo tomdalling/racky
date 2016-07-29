@@ -12,6 +12,25 @@
     <![endif]-->
   </head>
   <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <a class="navbar-brand" href="/">Litmal</a>
+        <ul class="nav navbar-nav navbar-right">
+          <% if current_user %>
+            <li><%= current_user.name %></li>
+            <li>
+              <form method="POST" action="/auth/sign_out">
+                <input type="submit" value="Sign Out" />
+              </form>
+            <li>
+          <% else %>
+            <li><a href="/auth/sign_in">Sign In</a></li>
+          <% end %>
+        </ul>
+      </div>
+    </nav>
+
     <div class="container">
       <%== content %>
     </div>

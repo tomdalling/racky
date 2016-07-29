@@ -119,6 +119,8 @@ module Routing
 
 
   class Endpoint
+    class InvalidResponse < StandardError; end
+
     attr_reader :method, :pattern, :options
 
     def initialize(method, pattern, next_app)
@@ -138,7 +140,13 @@ module Routing
         old_caps.merge(new_caps)
       end
 
-      @next_app.call(next_env)
+      response = @next_app.call(next_env)
+
+      unless response.is_a?(Array) && response.size == 3
+        raise InvalidResponse, "Endpoint generated an invalid rack response: #{response.inspect}"
+      end
+
+      response
     end
   end
 

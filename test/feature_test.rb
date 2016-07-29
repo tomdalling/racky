@@ -20,20 +20,27 @@ class FeatureTest < Minitest::Test
   end
 
   def sign_in!
+    create!(users: {
+      name: 'Feature Test User',
+      email: 'feature_test_user@example.com',
+      password: 'i love feature tests',
+    })
+
     visit '/auth/sign_in'
-    fill_in 'Username', with: 'admin'
-    fill_in 'Password', with: '123'
+    fill_in 'Email', with: 'feature_test_user@example.com'
+    fill_in 'Password', with: 'i love feature tests'
     click_button 'Sign In'
-    assert_path '/'
+
+    assert_path '/dashboard'
   end
 
   def db
     App['db']
   end
 
-  def create_records!(records)
+  def create!(records)
     records.each do |table, attr_list|
-      Array(attr_list).each do |attrs|
+      (attr_list.is_a?(Array) ? attr_list : [attr_list]).each do |attrs|
         db[table].insert(attrs)
       end
     end

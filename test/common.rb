@@ -1,3 +1,5 @@
+ENV['RACK_ENV'] = 'test'
+
 ROOT_DIR = File.expand_path('../..', __FILE__)
 
 Dir.chdir(ROOT_DIR)

@@ -75,6 +75,16 @@ module PigeonRoutingTests
       expect(response).nil?
       expect(@received_env).nil?
     end
+
+    def test_rack_compliance_verification
+      bad_app = ->(env) { nil }
+      pattern = Pigeon::Routing::Pattern.from_string('/whatever')
+      endpoint = Pigeon::Routing::Endpoint.new('GET', pattern, bad_app)
+
+      assert_raises(Pigeon::Routing::Endpoint::InvalidResponse) do
+        endpoint.call(Request['GET /whatever'])
+      end
+    end
   end
 
   class RouterTest < UnitTest
@@ -113,7 +123,8 @@ module PigeonRoutingTests
       resolver = proc do |key|
         proc do |env|
           chain = Array(env['mock_middleware']) + [key]
-          chain.map(&:inspect).join(' -> ')
+          body = chain.map(&:inspect).join(' -> ')
+          [200, {}, [body]]
         end
       end
 
@@ -145,7 +156,8 @@ module PigeonRoutingTests
         'GET  /blah'          => ':mw_outside -> :not_found',
       }.each do |request, expected_response|
         response = @routes.call(Request[request])
-        expect(response) == expected_response
+        body = response.last.join
+        expect(body) == expected_response
       end
     end
 

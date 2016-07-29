@@ -4,13 +4,35 @@ require 'pigeon/routing'
 require 'session'
 require 'sequel'
 
+#TODO: These empty modules exists so that classes can do this:
+#
+#     class Controllers::Whatever
+#
+# instead of this:
+#
+#     module Controllers
+#       class Whatever
+#
+# These should probably be elsewhere.
+module Controllers
+end
+module Views
+end
+module Queries
+end
+
 class App < Dry::Component::Container
   ROOT = Pathname.new(__FILE__).dirname.dirname
 
   load_paths! 'app'
   configure do |config|
     config.root = ROOT
-    config.auto_register = ['app/controllers', 'app/repos', 'app/queries']
+    config.auto_register = [
+      'app/controllers',
+      'app/repos',
+      'app/queries',
+      'app/views',
+    ]
   end
 
   begin # DB
