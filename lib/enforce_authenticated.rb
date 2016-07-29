@@ -3,7 +3,6 @@ require 'authentication'
 class EnforceAuthenticated
   def initialize(next_app)
     @next_app = next_app
-    @view = App['views.sign_in']
   end
 
   def call(env)

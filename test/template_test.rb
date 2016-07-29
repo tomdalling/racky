@@ -2,11 +2,24 @@ require 'unit_test'
 require 'template'
 
 class TemplateTest < UnitTest
-  def test_rendering
-    template = Template.new("Hello, <%= self %>!")
-    result = template.render('"World>')
+  def test_typical_template
+    template = Template.new(<<~EOS)
+      ---
+      title: Whatever
+      layout: default
+      ---
 
-    expect(result) == 'Hello, &quot;World&gt;!'
+      Hello, <%= name %>!
+    EOS
+    expect(template.frontmatter) == { 'title' => 'Whatever', 'layout' => 'default' }
+    result = template.render(name: '"World>')
+    expect(result.strip) == 'Hello, &quot;World&gt;!'
+  end
+
+  def test_no_frontmatter
+    template = Template.new('No frontmatter')
+    expect(template.frontmatter) == {}
+    expect(template.render) == 'No frontmatter'
   end
 
   def test_errors

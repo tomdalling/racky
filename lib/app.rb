@@ -29,9 +29,7 @@ class App < Dry::Component::Container
     config.root = ROOT
     config.auto_register = [
       'app/controllers',
-      'app/repos',
       'app/queries',
-      'app/views',
     ]
   end
 
