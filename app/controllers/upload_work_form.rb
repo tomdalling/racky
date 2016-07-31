@@ -6,7 +6,7 @@ class Controllers::UploadWorkForm
     [
       200,
       {},
-      View.render(view),
+      [View.render(view)],
     ]
   end
 end

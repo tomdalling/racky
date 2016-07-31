@@ -77,12 +77,24 @@ module PigeonRoutingTests
     end
 
     def test_rack_compliance_verification
-      bad_app = ->(env) { nil }
+      bad_app = ->(env) { env[:respond_with] }
       pattern = Pigeon::Routing::Pattern.from_string('/whatever')
       endpoint = Pigeon::Routing::Endpoint.new('GET', pattern, bad_app)
+      req = Request['GET /whatever']
 
+      # nil response
       assert_raises(Pigeon::Routing::Endpoint::InvalidResponse) do
-        endpoint.call(Request['GET /whatever'])
+        endpoint.call(req.merge(respond_with: nil))
+      end
+
+      # missing elements
+      assert_raises(Pigeon::Routing::Endpoint::InvalidResponse) do
+        endpoint.call(req.merge(respond_with: [200, {}]))
+      end
+
+      # body not enumerable
+      assert_raises(Pigeon::Routing::Endpoint::InvalidResponse) do
+        endpoint.call(req.merge(respond_with: [200, {}, "body"]))
       end
     end
   end
@@ -189,12 +201,12 @@ module PigeonRoutingTests
   end
 
   module Request
-    def self.[](method_and_path)
+    def self.[](method_and_path, extras={})
       method, _, path = method_and_path.partition(/\s+/)
       {
         'REQUEST_METHOD' => method.strip,
         'PATH_INFO' => path.strip
-      }
+      }.merge(extras)
     end
   end
 

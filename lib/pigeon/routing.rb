@@ -142,11 +142,18 @@ module Routing
 
       response = @next_app.call(next_env)
 
-      unless response.is_a?(Array) && response.size == 3
+      unless self.class.valid_response?(response)
         raise InvalidResponse, "Endpoint generated an invalid rack response: #{response.inspect}"
       end
 
       response
+    end
+
+    def self.valid_response?(response)
+      response.is_a?(Array) &&
+      response.size == 3 &&
+      response[1].is_a?(Hash) &&
+      response.last.respond_to?(:each)
     end
   end
 
