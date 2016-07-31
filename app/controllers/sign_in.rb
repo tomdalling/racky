@@ -1,6 +1,7 @@
 require 'params'
 require 'session'
 require 'authentication'
+require 'password'
 
 class Controllers::SignIn
   include App::Inject[
