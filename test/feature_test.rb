@@ -27,12 +27,15 @@ class FeatureTest < Minitest::Test
   end
 
   def sign_in!
-    create!(users: {
+    user_attrs = {
+      id: 123,
       name: 'Feature Test User',
       machine_name: 'feature_test_user',
       email: 'feature_test_user@example.com',
       password_hash: Password.hashed('i love feature tests'),
-    })
+    }
+
+    create!(users: user_attrs)
 
     visit '/auth/sign_in'
     fill_in 'Email', with: 'feature_test_user@example.com'
@@ -40,6 +43,8 @@ class FeatureTest < Minitest::Test
     click_button 'Sign In'
 
     assert_path '/dashboard'
+
+    OpenStruct.new(user_attrs)
   end
 
   def db

@@ -11,6 +11,7 @@ group :production do
   gem 'values', '~> 1.8.0'
   gem 'ox', '~> 2.4.3'
   gem 'rubyzip', '~> 1.2.0'
+  gem 'sass', '~> 3.4.22'
 end
 
 group :test do

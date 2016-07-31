@@ -2,6 +2,14 @@
 title: 'Dashboard'
 ---
 
-<h1>Dashboard</h1>
+<h1>Works</h1>
 
-<p>Nothing here yet.</p>
+<ul>
+  <% dashboard.works.each do |work| %>
+    <li>
+      <a href="<%= work.path %>">
+        <%= work.title %>
+      </a>
+    </li>
+  <% end %>
+</ul>

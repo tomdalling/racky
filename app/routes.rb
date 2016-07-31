@@ -8,6 +8,7 @@ middleware Rack::Session::Cookie,
 middleware Authentication
 
 get  '/' => :home
+get  '/css/style.css' => :stylesheet
 get  '/@:user/:work' => :work
 
 namespace '/auth' do

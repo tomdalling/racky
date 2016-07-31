@@ -1,0 +1,160 @@
+/*
+    Butterick’s Practical Typography rules:
+
+    - POINT SIZE is the size of the letters. On the web, the best size range is
+      15–25 pixels. Not every font appears equally large at a given point size,
+      so be prepared to adjust as necessary.
+
+    - LINE SPACING is the vertical distance between lines. It should be
+      120–145% of the point size.
+
+    - LINE LENGTH is the horizontal width of the text block. Line length should
+      be an average of 45–90 characters per line (use your word-count function)
+      or 2–3 lowercase alphabets, like so:
+
+      abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijk
+                                                  ^                                           ^
+                                                 45                                          90
+
+      On a web page, it usually means not allowing the text to flow to the
+      edges of the browser window.
+
+    - And finally, FONT CHOICE. The fastest, easiest, and most visible
+      improvement you can make to your typography is to ignore the fonts that
+      came free with your computer (known as system fonts) and buy a
+      professional font (like my fonts equity and concourse, or others found in
+      font recommendations). A professional font gives you the benefit of a
+      professional designer’s skills without having to hire one.
+
+      If that’s impossible, you can still make good typography with system
+      fonts. But choose wisely. And never choose TIMES NEW ROMAN or Arial, as
+      those fonts are favored only by the apathetic and sloppy. Not by
+      typographers. Not by you.
+ */
+
+@import 'https://fonts.googleapis.com/css?family=Fira+Sans|Gentium+Book+Basic';
+
+.lif-document {
+    margin-bottom: 100px;
+
+    color: #363030;
+    line-height: 145%;
+    font-family: "Gentium Book Basic", Cambria, Georgia, serif;
+    word-wrap: break-word;
+
+    @media (min-width: $screen-sm-min) { font-size: 20px; }
+    @media (min-width: $screen-md-min) { font-size: 23px; }
+    @media (min-width: $screen-lg-min) { font-size: 25px; }
+
+    h1 {
+        font-family: 'Fira Sans', sans-serif;
+        font-size: 200%;
+        margin-bottom: 2em;
+    }
+
+    p {
+        margin: 0;
+        &.fl-indent { text-indent: 1.5em; }
+        &.indent {
+            padding-left: 3em;
+            line-height: 125%;
+            margin: 1em 0;
+        }
+
+        span {
+            &.i { font-style: italic; }
+            &.b { font-weight: bold; }
+        }
+    }
+
+    hr {
+        border-color: #363030;
+        opacity: 0.3;
+        width: 60%;
+        margin: 1.5em auto;
+    }
+}
+
+.author-bio {
+    position: relative;
+    color: white;
+    background: black url(/author-bg.jpg) center;
+    background-size: cover;
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/author_bg.jpg', sizingMethod='scale')";
+    text-align: center;
+    margin-top: 70px;
+
+    &:before {
+        content : "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        @include gradient-vertical(rgba(0,0,0,0), rgba(0,0,0,0.9), 0%, 100%);
+    }
+
+    .row {
+        position: relative;
+        top: -50px;
+    }
+
+    img {
+        display: block;
+        margin: auto;
+        width: 200px;
+        height: 200px;
+        border: 7px solid white;
+    }
+
+    .written-by {
+        font-variant: small-caps;
+        text-transform: lowercase;
+        display: block;
+        margin: 1em 0 -0.4em;
+        text-shadow: 0 5 10px black;
+        opacity: 0.4;
+    }
+
+    .author-name {
+        font-size: 150%;
+        text-shadow: 0 5 10px black;
+    }
+
+    p.links {
+        margin: 0;
+        font-size: 80%;
+        &, & a {
+            color: #999;
+        }
+    }
+}
+
+.author-bio-outer {
+    overflow: hidden;
+}
+
+.work-list {
+    .work {
+        padding: 15px;
+        border: 1px solid #AAA;
+        border-radius: 4px;
+        margin-bottom: 20px;
+
+        .meta {
+            color: #999;
+            display: block;
+            font-size: 80%;
+        }
+    }
+}
+
+.work-options {
+    float: right;
+
+    .danger {
+        color: #880000;
+        font-weight: bold;
+    }
+}

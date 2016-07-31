@@ -8,7 +8,7 @@ class WorksTest < FeatureTest
   def test_upload
     click_link 'Upload'
     fill_in 'Title', with: 'Mahagaba'
-    attach_file 'Word Document', 'test/data/mahagaba.docx'
+    attach_file 'Word Document', 'test/fixtures/mahagaba.docx'
     click_button 'Upload'
 
     assert_path '/@feature_test_user/Mahagaba'
