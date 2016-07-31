@@ -37,9 +37,13 @@ class App < Dry::Component::Container
   end
 
   begin # DB
-    db = Sequel.sqlite(':memory:')
-    schema_path = ROOT + 'app/schema.rb'
-    db.instance_eval(schema_path.read, schema_path.to_s, 1)
+    #TODO: this needs to be moved out into config
+    conf = (ENV['RACK_ENV'] == 'test' ? ':memory:' : 'database.sqlite3')
+    db = Sequel.sqlite(conf)
+    if db.tables.empty?
+      schema_path = ROOT + 'app/schema.rb'
+      db.instance_eval(schema_path.read, schema_path.to_s, 1)
+    end
     register('db', db)
   end
 
