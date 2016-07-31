@@ -23,7 +23,7 @@ class FeatureTest < Minitest::Test
     create!(users: {
       name: 'Feature Test User',
       email: 'feature_test_user@example.com',
-      password: 'i love feature tests',
+      password_hash: Password.hashed('i love feature tests'),
     })
 
     visit '/auth/sign_in'

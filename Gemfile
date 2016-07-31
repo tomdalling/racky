@@ -7,6 +7,7 @@ group :production do
   gem 'ice_nine', '~> 0.11.2'
   gem 'sequel', '~> 4.36.0'
   gem 'sqlite3', '~> 1.3.11'
+  gem 'bcrypt', '~> 3.1.11'
 end
 
 group :test do

@@ -9,5 +9,5 @@ create_table(:users) do
   primary_key :id
   String :email
   String :name
-  String :password
+  String :password_hash
 end

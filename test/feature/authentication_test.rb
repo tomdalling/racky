@@ -1,11 +1,12 @@
 require 'feature_test'
+require 'password'
 
 class AuthenticationTest < FeatureTest
   def setup
     create!(users: {
       name: 'Sam Smith',
       email: 'sam@example.com',
-      password: 'slippery sam'
+      password_hash: Password.hashed('slippery sam'),
     })
   end
 
