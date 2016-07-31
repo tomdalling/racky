@@ -7,13 +7,17 @@ module Params
   end
 
   def self.from_request(env)
+    content_type = env.fetch('CONTENT_TYPE', '')
+
     case
     when env['QUERY_STRING'].length > 0
       Rack::Utils.parse_nested_query(env['QUERY_STRING'])
-    when env['CONTENT_TYPE'] == 'application/x-www-form-urlencoded'
+    when content_type == 'application/x-www-form-urlencoded'
       body = env['rack.input']
       body.rewind
       Rack::Utils.parse_nested_query(body.read)
+    when content_type.start_with?('multipart/form-data')
+      Rack::Multipart.parse_multipart(env)
     else
       {}
     end

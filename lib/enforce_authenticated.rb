@@ -6,7 +6,7 @@ class EnforceAuthenticated
   end
 
   def call(env)
-    if env[Authentication::ENV_KEY]
+    if Authentication.get(env)
       @next_app.call(env)
     else
       #TODO: return url

@@ -20,6 +20,8 @@ module Views
 end
 module Queries
 end
+module Commands
+end
 
 class App < Dry::Component::Container
   ROOT = Pathname.new(__FILE__).dirname.dirname
@@ -30,6 +32,7 @@ class App < Dry::Component::Container
     config.auto_register = [
       'app/controllers',
       'app/queries',
+      'app/commands',
     ]
   end
 

@@ -10,10 +10,16 @@ class FeatureTest < Minitest::Test
   include Expectations
   include Capybara::DSL
 
+  def before_setup
+    db.run('BEGIN TRANSACTION')
+    super
+  end
+
   def after_teardown
     Capybara.reset_sessions!
     Capybara.use_default_driver
     super
+    db.run('ROLLBACK')
   end
 
   def assert_path(path, msg=nil)
@@ -43,7 +49,7 @@ class FeatureTest < Minitest::Test
   def create!(records)
     records.each do |table, attr_list|
       (attr_list.is_a?(Array) ? attr_list : [attr_list]).each do |attrs|
-        db[table].insert(attrs)
+        result = db[table].insert(attrs)
       end
     end
   end
@@ -60,9 +66,9 @@ class FeatureTest < Minitest::Test
     assert page.send(method, *args), msg
   end
 
-  def assert_page_content(content, options)
+  def assert_page_content(content, options={})
     selector = options[:in]
     element = selector ? page.find(selector) : page
-    assert element.has_content?(content)
+    assert element.has_content?(content), "assert_page_content #{content.inspect}, #{options.inspect}"
   end
 end

@@ -18,5 +18,15 @@ module Queries
           .last
       )
     end
+
+    def find_by_slug(user_name, work_name)
+      user = db[:users].first(machine_name: user_name)
+      return nil unless user
+
+      work = db[:works].first(user_id: user.fetch(:id), machine_name: work_name)
+      return nil unless work
+
+      OpenStruct.new(work)
+    end
   end
 end

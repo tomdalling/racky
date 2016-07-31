@@ -8,7 +8,7 @@ middleware Rack::Session::Cookie,
 middleware Authentication
 
 get  '/' => :home
-get  '/@:username/:work' => :work
+get  '/@:user/:work' => :work
 
 namespace '/auth' do
   get  '/sign_in' => :sign_in_form

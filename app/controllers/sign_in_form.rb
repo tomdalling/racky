@@ -4,7 +4,7 @@ class Controllers::SignInForm
   include App::Inject[view: 'templates.sign_in']
 
   def call(env)
-    current_user = env.fetch(Authentication::ENV_KEY)
+    current_user = Authentication.get(env)
     if current_user
       [303, { 'Location' => '/dashboard' }, []]
     else

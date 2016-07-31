@@ -8,6 +8,9 @@ group :production do
   gem 'sequel', '~> 4.36.0'
   gem 'sqlite3', '~> 1.3.11'
   gem 'bcrypt', '~> 3.1.11'
+  gem 'values', '~> 1.8.0'
+  gem 'ox', '~> 2.4.3'
+  gem 'rubyzip', '~> 1.2.0'
 end
 
 group :test do

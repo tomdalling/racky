@@ -14,4 +14,8 @@ class Authentication
     user = uid && @users.find(uid)
     @next_app.call(env.merge(ENV_KEY => user))
   end
+
+  def self.get(env)
+    env.fetch(ENV_KEY, nil)
+  end
 end
