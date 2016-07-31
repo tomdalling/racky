@@ -12,6 +12,7 @@ class Controllers::SignIn
     params = Params.get(env)
     user = users.find_by_email(params.fetch('email'))
     if user && Password.compare(params.fetch('password'), user.password_hash)
+      Session.clear(env)
       session = Session.get(env)
       session[Authentication::SESSION_KEY] = user.id
       [303, { 'Location' => '/dashboard' }, []]
