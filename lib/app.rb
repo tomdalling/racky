@@ -23,12 +23,26 @@ end
 module Commands
 end
 
+class MemoizingResolver < Dry::Container::Resolver
+  def initialize(*)
+    super
+    @cache = {}
+  end
+
+  def call(container, key)
+    @cache.fetch(key) do
+      @cache[key] = super
+    end
+  end
+end
+
 class App < Dry::Component::Container
   ROOT = Pathname.new(__FILE__).dirname.dirname
 
   load_paths! 'app'
   configure do |config|
     config.root = ROOT
+    config.resolver = MemoizingResolver.new
     config.auto_register = [
       'app/controllers',
       'app/queries',
@@ -36,15 +50,15 @@ class App < Dry::Component::Container
     ]
   end
 
-  begin # DB
+  register 'db' do
     #TODO: this needs to be moved out into config
     conf = (ENV['RACK_ENV'] == 'test' ? ':memory:' : 'database.sqlite3')
-    db = Sequel.sqlite(conf)
-    if db.tables.empty?
-      schema_path = ROOT + 'app/schema.rb'
-      db.instance_eval(schema_path.read, schema_path.to_s, 1)
+    Sequel.sqlite(conf).tap do |db|
+      if db.tables.empty?
+        schema_path = ROOT + 'app/schema.rb'
+        db.instance_eval(schema_path.read, schema_path.to_s, 1)
+      end
     end
-    register('db', db)
   end
 
   namespace 'templates' do
