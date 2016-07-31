@@ -8,6 +8,7 @@ middleware Rack::Session::Cookie,
 middleware Authentication
 
 get  '/' => :home
+get  '/@:username/:work' => :work
 
 namespace '/auth' do
   get  '/sign_in' => :sign_in_form
@@ -15,10 +16,12 @@ namespace '/auth' do
   post '/sign_out' => :sign_out
 end
 
-group do
+group :authentication_required do
   middleware EnforceAuthenticated
 
   get  '/dashboard' => :dashboard
+  get  '/works/upload' => :upload_work_form
+  post '/works/upload' => :upload_work
 end
 
 always :not_found

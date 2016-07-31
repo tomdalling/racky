@@ -211,7 +211,7 @@ module Routing
       _pop
     end
 
-    def group(&definition_block)
+    def group(name=nil, &definition_block)
       route = define(&definition_block)
       mount(route)
     end

@@ -18,6 +18,7 @@
         <a class="navbar-brand" href="/">Litmal</a>
         <ul class="nav navbar-nav navbar-right">
           <% if current_user %>
+            <li><a href="/works/upload">Upload</a></li>
             <li><%= current_user.name %></li>
             <li>
               <form method="POST" action="/auth/sign_out">

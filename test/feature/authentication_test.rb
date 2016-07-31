@@ -13,6 +13,7 @@ class AuthenticationTest < FeatureTest
   def test_successful_sign_in
     visit '/'
     click_link 'Sign In'
+    assert_path '/auth/sign_in'
     fill_in 'Email', with: 'sam@example.com'
     fill_in 'Password', with: 'slippery sam'
     click_button 'Sign In'
@@ -37,6 +38,12 @@ class AuthenticationTest < FeatureTest
     click_button 'Sign In'
     assert_path '/auth/sign_in'
     assert_page :has_content?, 'Email or password was incorrect'
+  end
+
+  def test_already_signed_in
+    sign_in!
+    try_visit '/auth/sign_in'
+    assert_path '/dashboard'
   end
 
   def test_unauthenticated_redirect

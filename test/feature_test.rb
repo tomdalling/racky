@@ -2,6 +2,7 @@ require_relative 'common'
 require 'expectations'
 require 'capybara/dsl'
 require 'app'
+require 'password'
 
 Capybara.app = App
 
@@ -22,6 +23,7 @@ class FeatureTest < Minitest::Test
   def sign_in!
     create!(users: {
       name: 'Feature Test User',
+      machine_name: 'feature_test_user',
       email: 'feature_test_user@example.com',
       password_hash: Password.hashed('i love feature tests'),
     })
@@ -56,5 +58,11 @@ class FeatureTest < Minitest::Test
   def assert_page(method, *args)
     msg = "Failed: page.#{method}(#{args.map(&:inspect).join(', ')})"
     assert page.send(method, *args), msg
+  end
+
+  def assert_page_content(content, options)
+    selector = options[:in]
+    element = selector ? page.find(selector) : page
+    assert element.has_content?(content)
   end
 end

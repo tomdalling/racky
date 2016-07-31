@@ -1,7 +1,12 @@
 require 'coercidator'
+require 'pigeon/routing'
 
 module Params
   def self.get(env)
+    from_request(env).merge(from_routing(env))
+  end
+
+  def self.from_request(env)
     case
     when env['QUERY_STRING'].length > 0
       Rack::Utils.parse_nested_query(env['QUERY_STRING'])
@@ -12,6 +17,10 @@ module Params
     else
       {}
     end
+  end
+
+  def self.from_routing(env)
+    env.fetch(Pigeon::Routing::CAPTURES_ENV_KEY, {})
   end
 
   SCHEMA_COMPILER = Coercidator::Compiler.new(
