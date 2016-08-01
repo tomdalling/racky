@@ -1,58 +1,55 @@
-<div class="home-banner">
-  <div class="blurb">
-    <h1>Litmal <small>Share nice readable fiction</small></h1>
+---
+title: "Litmal – Share nice readable fiction"
+---
+<div class="homepage">
 
-    <p>Litmal is a place to read and share short works of fiction,
-    in a format designed to be nice and readable on phones, tablets,
-    and larger screens.</p>
-  </div>
-</div>
+  <div class="banner">
+    <div class="blurb">
+      <h1>Litmal <small>Share nice readable fiction</small></h1>
 
-<div class="row">
-  <div class="feature col-md-4">
-    <h2>Featured</h2>
-    <div class="lif-document featured">
-      <span class="title"><%= featured_work.title %></span>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-      aliquam lectus nulla, ac lacinia felis commodo quis. Etiam interdum risus
-      eu magna sodales, nec tempor diam hendrerit. Duis sagittis et magna vel
-      ornare. Curabitur egestas, justo sit amet consectetur feugiat, nunc
-      lectus viverra nisl, id elementum elit lorem et ipsum. Phasellus laoreet
-      est eget orci tempus semper. Donec eget volutpat quam. Nunc porttitor,
-      diam in accumsan ornare, nisi diam bibendum dolor, eu vestibulum lorem
-      velit fringilla urna. Class aptent taciti sociosqu ad litora torquent per
-      conubia nostra, per inceptos himenaeos. Praesent sit amet nisl orci.</p>
+      <p>Litmal is a place to read and share short works of fiction,
+      in a format designed to be nice and readable on phones, tablets,
+      and larger screens.</p>
     </div>
-    <a href="/text/abc123/whatever-slug">Read more &rarr;</a>
   </div>
 
-  <div class="feature col-md-4">
-    <h2>Latest</h2>
-    <div class="lif-document latest">
-      <span class="title"><%= latest_work.title %></span>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-      aliquam lectus nulla, ac lacinia felis commodo quis. Etiam interdum risus
-      eu magna sodales, nec tempor diam hendrerit. Duis sagittis et magna vel
-      ornare. Curabitur egestas, justo sit amet consectetur feugiat, nunc
-      lectus viverra nisl, id elementum elit lorem et ipsum. Phasellus laoreet
-      est eget orci tempus semper. Donec eget volutpat quam. Nunc porttitor,
-      diam in accumsan ornare, nisi diam bibendum dolor, eu vestibulum lorem
-      velit fringilla urna. Class aptent taciti sociosqu ad litora torquent per
-      conubia nostra, per inceptos himenaeos. Praesent sit amet nisl orci.</p>
+  <div class="row">
+    <div class="feature col-md-4">
+      <span class="home-tag">Editor's Pick</span>
+      <% if featured_work %>
+        <div class="lif-document featured">
+          <h2 class="title"><%= featured_work.title %></h2>
+          <%== featured_work.blurb_html %>
+        </div>
+        <a class="read-more" href="<%= featured_work.path %>">Continue reading &rarr;</a>
+      <% else %>
+        <p>None</p>
+      <% end %>
     </div>
-    <a href="/text/abc123/whatever-slug">Read more &rarr;</a>
+
+    <div class="feature col-md-4">
+      <span class="home-tag">Latest</span>
+      <% if latest_work %>
+        <div class="lif-document latest">
+          <h2 class="title"><%= latest_work.title %></h2>
+          <%== latest_work.blurb_html %>
+        </div>
+        <a class="read-more" href="<%= latest_work.path %>">Continue reading &rarr;</a>
+      <% else %>
+        <p>None</p>
+      <% end %>
+    </div>
+
+    <div class="feature col-md-4">
+      <span class="home-tag">How It Works</span>
+      <p>Litmal extracts text from Word documents. It's as easy as uploading a
+      docx file.</p>
+      <p>Register today to upload your own work of fiction. It's free!</p>
+      <p>
+        <a href="<%= register_user_form_path %>" class="btn btn-primary">Register</a>
+        <a href="#" class="btn btn-default">Learn more</a>
+      </p>
+    </div>
   </div>
 
-  <div class="feature col-md-4">
-    <h2>Register</h2>
-    <p>Register today to upload your own work of fiction. It's free!</p>
-    <p><a href="<%= register_user_form_path %>" class="btn btn-primary">
-      Register
-    </a></p>
-
-    <h2>Upload docx Files</h2>
-    <p>Litmal extracts text from Word documents. It's as easy as uploading a
-    docx file.</p>
-    <p><a href="#" class="btn btn-default">Learn more</a></p>
-  </div>
 </div>

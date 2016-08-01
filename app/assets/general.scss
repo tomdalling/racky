@@ -1,0 +1,43 @@
+html {
+    $top-color: #ffdb99;
+    $bottom-color: #ffefd3;
+    background: $bottom-color;
+    body {
+        @include gradient-vertical($top-color, #ffefd3, 0, 150px);
+    }
+}
+
+
+.homepage {
+    .banner {
+        padding: 1em 0 2em 0;
+        margin-bottom: 30px;
+        h1 { color: #c2732e; }
+        h1 small {
+            display: block;
+            color: rgba(0,0,0,0.4);
+        }
+        p { color: rgba(0,0,0,0.7); }
+    }
+
+    .read-more {
+        display: block;
+        margin: 1em 0;
+    }
+
+    .home-tag {
+        $color: #c2732e;
+        color: $color;
+        display: block;
+        padding: 3px 2px;
+        border-bottom: 1px solid $color;
+        font-style: italic;
+        margin-bottom: 0.7em;
+    }
+
+    .lif-document {
+        .title {
+            margin-top: 0;
+        }
+    }
+}

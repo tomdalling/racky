@@ -35,21 +35,14 @@
 @import 'https://fonts.googleapis.com/css?family=Fira+Sans|Gentium+Book+Basic';
 
 .lif-document {
-    margin-bottom: 100px;
-
     color: #363030;
     line-height: 145%;
     font-family: "Gentium Book Basic", Cambria, Georgia, serif;
     word-wrap: break-word;
 
-    @media (min-width: $screen-sm-min) { font-size: 20px; }
-    @media (min-width: $screen-md-min) { font-size: 23px; }
-    @media (min-width: $screen-lg-min) { font-size: 25px; }
-
-    h1 {
+    .title {
         font-family: 'Fira Sans', sans-serif;
         font-size: 200%;
-        margin-bottom: 2em;
     }
 
     p {
@@ -72,6 +65,18 @@
         opacity: 0.3;
         width: 60%;
         margin: 1.5em auto;
+    }
+}
+
+.lif-document-page {
+    margin-bottom: 100px;
+
+    @media (min-width: $screen-sm-min) { font-size: 20px; }
+    @media (min-width: $screen-md-min) { font-size: 23px; }
+    @media (min-width: $screen-lg-min) { font-size: 25px; }
+
+    .title {
+        margin-bottom: 2em;
     }
 }
 
