@@ -26,7 +26,7 @@ class LIFTest < UnitTest
   end
 
   def self.doc
-    @_doc ||= LIF::DocxParser.parse('test/data/mr_sweetly.docx')
+    @_doc ||= LIF::DocxParser.parse('test/fixtures/mr_sweetly.docx')
   end
 
 end
