@@ -54,8 +54,23 @@ class FeatureTest < Minitest::Test
   def create!(records)
     records.each do |table, attr_list|
       (attr_list.is_a?(Array) ? attr_list : [attr_list]).each do |attrs|
-        result = db[table].insert(attrs)
+        result = db[table].insert(flesh_out(table, attrs))
       end
+    end
+  end
+
+  def flesh_out(table, attrs)
+    if table == :works && !attrs[:lif_document]
+      attrs.merge(lif_document: lif_document_fixture)
+    else
+      attrs
+    end
+  end
+
+  def lif_document_fixture
+    @_lif_document_fixture ||= begin
+      lif = LIF::DocxParser.parse('test/fixtures/mahagaba.docx')
+      LIF::JSON::Converter.convert(lif)
     end
   end
 
