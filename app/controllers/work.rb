@@ -8,7 +8,8 @@ class Controllers::Work
 
   def call(env)
     params = Params.get(env)
-    work = works.find_by_slug(params.fetch(:user), params.fetch(:work))
+    current_user = Authentication.get(env)
+    work = works.find_by_slug(params.fetch(:user), params.fetch(:work), current_user)
     if work
       [200, {}, [View.render(view,
         work: work,
