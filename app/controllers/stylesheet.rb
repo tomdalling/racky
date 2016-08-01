@@ -1,13 +1,15 @@
 require 'sass'
 
 class Controllers::Stylesheet
-  def call(env)
-    engine = Sass::Engine.new('@import "stylesheet"',
+  def initialize
+    @engine = Sass::Engine.new('@import "stylesheet"',
       style: :compressed,
       syntax: :scss,
       load_paths: [App::ROOT.join('app/assets/').realpath],
     )
+  end
 
-    [200, {}, [engine.render]]
+  def call(env)
+    [200, {}, [@engine.render]]
   end
 end
