@@ -1,5 +1,6 @@
 require 'authentication'
 require 'view'
+require 'work_decorator'
 
 class Controllers::Dashboard
   include App::Inject[
@@ -10,10 +11,10 @@ class Controllers::Dashboard
   def call(env)
     current_user = Authentication.get(env)
     dashboard = query.call(current_user)
-    dashboard.works.each do |work|
-      work.path = "/@#{current_user.machine_name}/#{work.machine_name}"
-    end
-    body = View.render(view, current_user: current_user, dashboard: dashboard)
+    body = View.render(view,
+      current_user: current_user,
+      works: dashboard.works.map{ |w| WorkDecorator.new(w) },
+    )
     [200, {}, [body]]
   end
 end

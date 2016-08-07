@@ -5,11 +5,9 @@ title: 'Dashboard'
 <h1>Works</h1>
 
 <ul>
-  <% dashboard.works.each do |work| %>
+  <% works.each do |w| %>
     <li>
-      <a href="<%= work.path %>">
-        <%= work.title %>
-      </a>
+      <a href="<%= w.path %>"><%= w.title %></a>
     </li>
   <% end %>
 </ul>
