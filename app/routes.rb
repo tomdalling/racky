@@ -9,7 +9,7 @@ middleware Authentication
 
 get  '/' => :home
 get  '/css/style.css' => :stylesheet
-get  '/@:user/:work' => :work
+get  '/@:user/:work' => :view_work
 
 namespace '/auth' do
   get  '/sign_in' => :sign_in_form
