@@ -2,7 +2,7 @@ require 'lif'
 
 class Controllers::Work
   include App::Inject[
-    works: 'queries.work',
+    #works: 'queries.work',
     view: 'templates.work',
   ]
 

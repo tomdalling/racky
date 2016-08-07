@@ -14,10 +14,10 @@ title: "Litmal – Share nice readable fiction"
   </div>
 
   <div class="row">
-    <div class="feature col-md-4">
+    <div class="featured col-md-4">
       <span class="home-tag">Editor's Pick</span>
       <% if featured_work %>
-        <div class="lif-document featured">
+        <div class="lif-document">
           <h2 class="title"><%= featured_work.title %></h2>
           <%== featured_work.blurb_html %>
         </div>
@@ -27,10 +27,10 @@ title: "Litmal – Share nice readable fiction"
       <% end %>
     </div>
 
-    <div class="feature col-md-4">
+    <div class="latest col-md-4">
       <span class="home-tag">Latest</span>
       <% if latest_work %>
-        <div class="lif-document latest">
+        <div class="lif-document">
           <h2 class="title"><%= latest_work.title %></h2>
           <%== latest_work.blurb_html %>
         </div>

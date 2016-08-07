@@ -14,7 +14,7 @@ work(
   user_id: 1,
   published_at: Time.now - 5,
   featured_at: Time.now,
-  lif_document: lif_json('mahagaba.docx'),
+  lif_document: lif_json('short.docx'),
 )
 
 work(
@@ -22,5 +22,5 @@ work(
   machine_name: 'latest_baitest',
   user_id: 1,
   published_at: Time.now + 5,
-  lif_document: lif_json('mr_sweetly.docx'),
+  lif_document: lif_json('short.docx'),
 )

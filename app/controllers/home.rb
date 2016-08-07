@@ -2,24 +2,22 @@ require 'view'
 
 class Controllers::Home
   include App::Inject[
-    works: 'queries.work',
+    query: 'queries.homepage',
     view: 'templates.home',
   ]
 
   def call(env)
-    #TODO: this needs to be moved into the view layer
-    featured = enrich(works.featured)
-    latest = enrich(works.latest)
-
+    home = query.call
     [200, {}, [
       View.render(view,
-        featured_work: featured,
-        latest_work: latest,
+        featured_work: enrich!(home.featured),
+        latest_work: enrich!(home.latest),
       )
     ]]
   end
 
-  def enrich(work)
+  #TODO: this needs to be moved into the view layer
+  def enrich!(work)
     return unless work
 
     doc = LIF::JSON::Parser.parse(work.lif_document)
@@ -32,7 +30,7 @@ class Controllers::Home
     work.blurb_html = LIF::HTMLConverter.convert(blurb_doc)
 
     # needs the author to generate the path
-    work.path = "/todo/here"
+    work.path = "/@#{work.author.machine_name}/#{work.machine_name}"
 
     work
   end
