@@ -2,14 +2,6 @@ require 'feature_test'
 require 'password'
 
 class AuthenticationTest < FeatureTest
-  def setup
-    create!(users: {
-      name: 'Sam Smith',
-      email: 'sam@example.com',
-      password_hash: Password.hashed('slippery sam'),
-    })
-  end
-
   def test_successful_sign_in
     visit '/'
     click_link 'Sign In'

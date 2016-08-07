@@ -3,8 +3,24 @@ require 'expectations'
 require 'capybara/dsl'
 require 'app'
 require 'password'
+require 'fixture_dsl'
 
 Capybara.app = App
+
+def load_fixtures!
+  dsl = FixtureDSL.new
+  path = 'test/fixtures/db.rb'
+  dsl.instance_eval(File.read(path), path, 1)
+
+  db = App['db']
+  dsl.records_by_table.each do |table, records|
+    records.each do |attrs|
+      db[table].insert(attrs)
+    end
+  end
+end
+load_fixtures!
+
 
 class FeatureTest < Minitest::Test
   include Expectations
@@ -27,36 +43,18 @@ class FeatureTest < Minitest::Test
   end
 
   def sign_in!
-    user_attrs = {
-      id: 123,
-      name: 'Feature Test User',
-      machine_name: 'feature_test_user',
-      email: 'feature_test_user@example.com',
-      password_hash: Password.hashed('i love feature tests'),
-    }
-
-    create!(users: user_attrs)
-
     visit '/auth/sign_in'
-    fill_in 'Email', with: 'feature_test_user@example.com'
-    fill_in 'Password', with: 'i love feature tests'
+    fill_in 'Email', with: 'sam@example.com'
+    fill_in 'Password', with: 'slippery sam'
     click_button 'Sign In'
 
     assert_path '/dashboard'
 
-    OpenStruct.new(user_attrs)
+    nil
   end
 
   def db
     App['db']
-  end
-
-  def create!(records)
-    records.each do |table, attr_list|
-      (attr_list.is_a?(Array) ? attr_list : [attr_list]).each do |attrs|
-        result = db[table].insert(flesh_out(table, attrs))
-      end
-    end
   end
 
   def flesh_out(table, attrs)

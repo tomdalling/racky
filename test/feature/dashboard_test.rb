@@ -2,17 +2,10 @@ require 'feature_test'
 
 class DashboardTest < FeatureTest
   def test_content
-    user = sign_in!
-    create!(works: [
-      { user_id: user.id, title: 'Mahagaba', machine_name: 'Mahagaba' },
-      { user_id: user.id, title: 'Mahuggable', machine_name: 'Mahuggable' },
-      { user_id: user.id, title: 'Muhringus', machine_name: 'Muhringus' },
-    ])
-
+    sign_in!
     visit '/dashboard'
 
-    assert page.has_link? 'Mahagaba', href: '/@feature_test_user/Mahagaba'
-    assert page.has_link? 'Mahuggable', href: '/@feature_test_user/Mahuggable'
-    assert page.has_link? 'Muhringus', href: '/@feature_test_user/Muhringus'
+    assert page.has_link? 'Featured Peatured', href: '/@sam/featured_peatured'
+    assert page.has_link? 'Latest Baitest', href: '/@sam/latest_baitest'
   end
 end
