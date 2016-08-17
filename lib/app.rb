@@ -1,11 +1,12 @@
+require 'pathname'
 require 'template'
-require 'dry/component/container'
 require 'pigeon/routing'
 require 'session'
 require 'sequel'
 require 'page'
 require 'inflecto'
 require 'def_deps'
+require 'container'
 
 #TODO: These empty modules exists so that classes can do this:
 #
@@ -26,39 +27,21 @@ end
 module Commands
 end
 
-#TODO: this is not thread safe
-class MemoizingResolver < Dry::Container::Resolver
-  def initialize(*)
-    super
-    @cache = {}
-  end
-
-  def call(container, key)
-    @cache.fetch(key) do
-      @cache[key] = super
-    end
-  end
-end
-
-Dry::Container.configure do |config|
-  config.namespace_separator = '/'
-end
-
 class App
   ROOT = Pathname.new(__FILE__).dirname.dirname
 
   attr_reader :container
 
   def initialize(config)
-    @container = Dry::Container.new
-    @container.register('config', config)
-    @container.register('db', db_connection)
-    @container.register('page', page)
-    @container.import(templates)
+    @container = Container.new
+    @container.register('config') { config }
+    @container.register('db') { db_connection }
+    @container.register('page') { page }
+    register_templates!
     register_app_directory!('queries')
     register_app_directory!('commands')
     register_app_directory!('controllers')
-    @container.register('router', router)
+    @container.register('router') { router }
   end
 
   def config
@@ -82,21 +65,18 @@ class App
     Page.new(resolver)
   end
 
-  def templates
-    Dry::Container::Namespace.new('templates') do
-      Dir.glob("#{ROOT}/app/templates/**/*.erb") do |path|
-        register(File.basename(path, '.*')) do
-          Template.new(File.read(path), path)
-        end
+  def register_templates!
+    Dir.glob("#{ROOT}/app/templates/**/*.erb") do |path|
+      name = File.basename(path, '.*')
+      container.register("templates/#{name}") do
+        Template.new(File.read(path), path)
       end
     end
   end
 
   def register_app_directory!(dirname)
     DefDepsClassFile.glob("app", "#{dirname}/**/*.rb") do |class_file|
-      container.register(class_file.container_key) do
-        class_file.instantiate(container)
-      end
+      container.register(class_file.container_key, &class_file)
     end
   end
 
