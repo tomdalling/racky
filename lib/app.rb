@@ -49,7 +49,6 @@ class App
   end
 
   def db_connection
-    #(ENV['RACK_ENV'] == 'test' ? ':memory:' : 'database.sqlite3')
     Sequel.connect(config.db_connection_str).tap do |db|
       #TODO: This needs to be moved out.
       #      Creating tables should happen manually, not automatically.
@@ -89,12 +88,6 @@ class App
 
   def call(env)
     @container.resolve('router').call(env)
-  end
-
-  module Inject
-    def self.[](whatever)
-      Module.new
-    end
   end
 end
 
