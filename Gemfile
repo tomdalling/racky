@@ -11,6 +11,7 @@ group :production do
   gem 'ox', '~> 2.4.3'
   gem 'rubyzip', '~> 1.2.0'
   gem 'sass', '~> 3.4.22'
+  gem 'inflecto', '~> 0.0.2'
 end
 
 group :test do
