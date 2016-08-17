@@ -1,4 +1,4 @@
-class Controllers::UploadWorkForm
+class Endpoints::UploadWorkForm
   include DefDeps[:page]
 
   def call(env)

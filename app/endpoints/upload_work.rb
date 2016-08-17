@@ -1,6 +1,6 @@
 require 'authentication'
 
-class Controllers::UploadWork
+class Endpoints::UploadWork
   include DefDeps[create_work: 'commands/create_work']
 
   def call(env)

@@ -1,7 +1,7 @@
 require 'authentication'
 require 'work_decorator'
 
-class Controllers::Dashboard
+class Endpoints::Dashboard
   include DefDeps[:page, query: 'queries/dashboard']
 
   def call(env)

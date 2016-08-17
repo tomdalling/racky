@@ -10,15 +10,15 @@ require 'container'
 
 #TODO: These empty modules exists so that classes can do this:
 #
-#     class Controllers::Whatever
+#     class Endpoints::Whatever
 #
 # instead of this:
 #
-#     module Controllers
+#     module Endpoints
 #       class Whatever
 #
 # These should probably be elsewhere.
-module Controllers
+module Endpoints
 end
 module Views
 end
@@ -40,7 +40,7 @@ class App
     register_templates!
     register_app_directory!('queries')
     register_app_directory!('commands')
-    register_app_directory!('controllers')
+    register_app_directory!('endpoints')
     @container.register('router') { router }
   end
 
@@ -81,7 +81,7 @@ class App
 
   def router
     resolver = Proc.new do |key|
-      @container.resolve(key.is_a?(Symbol) ? "controllers/#{key}" : key)
+      @container.resolve(key.is_a?(Symbol) ? "endpoints/#{key}" : key)
     end
     Pigeon::Routing::DSL.new(resolver).eval_file(ROOT + 'app/routes.rb')
   end

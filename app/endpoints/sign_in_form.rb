@@ -1,6 +1,6 @@
 require 'params'
 
-class Controllers::SignInForm
+class Endpoints::SignInForm
   include DefDeps[:page]
 
   def call(env)

@@ -1,7 +1,7 @@
 require 'lif'
 require 'work_decorator'
 
-class Controllers::ViewWork
+class Endpoints::ViewWork
   include DefDeps[
     :page,
     query: 'queries/work',

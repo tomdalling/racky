@@ -3,7 +3,7 @@ require 'session'
 require 'authentication'
 require 'password'
 
-class Controllers::SignIn
+class Endpoints::SignIn
   include DefDeps[
     :page,
     users: 'queries/user',

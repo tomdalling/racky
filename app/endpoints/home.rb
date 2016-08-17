@@ -1,7 +1,7 @@
 require 'work_decorator'
 require 'http_cache'
 
-class Controllers::Home
+class Endpoints::Home
   include DefDeps[
     :page,
     query: 'queries/homepage',

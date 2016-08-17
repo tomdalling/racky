@@ -1,6 +1,6 @@
 require 'sass'
 
-class Controllers::Stylesheet
+class Endpoints::Stylesheet
   def initialize
     @engine = Sass::Engine.new('@import "stylesheet"',
       style: :compressed,
