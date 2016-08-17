@@ -1,5 +1,5 @@
 class Queries::Dashboard
-  include App::Inject['db']
+  include DefDeps['db']
 
   def call(author)
     OpenStruct.new(

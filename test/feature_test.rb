@@ -4,22 +4,27 @@ require 'capybara/dsl'
 require 'app'
 require 'password'
 require 'fixture_dsl'
+require 'config'
 
-Capybara.app = App
 
-def load_fixtures!
+Capybara.app = begin
+  app = App.new(Config.new(
+    'DB_CONNECTION_STR' => 'sqlite::memory',
+  ))
+
   dsl = FixtureDSL.new
   path = 'test/fixtures/db.rb'
   dsl.instance_eval(File.read(path), path, 1)
 
-  db = App['db']
+  db = app.container.resolve('db')
   dsl.records_by_table.each do |table, records|
     records.each do |attrs|
       db[table].insert(attrs)
     end
   end
+
+  app
 end
-load_fixtures!
 
 
 class FeatureTest < Minitest::Test
@@ -53,8 +58,12 @@ class FeatureTest < Minitest::Test
     nil
   end
 
+  def resolve(key)
+    Capybara.app.container[key]
+  end
+
   def db
-    App['db']
+    resolve('db')
   end
 
   def flesh_out(table, attrs)

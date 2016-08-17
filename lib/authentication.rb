@@ -6,7 +6,7 @@ class Authentication
 
   def initialize(next_app, users=nil)
     @next_app = next_app
-    @users = users || App['queries.user']
+    @users = users
   end
 
   def call(env)

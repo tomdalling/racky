@@ -1,12 +1,11 @@
-require 'view'
-
 class Controllers::UploadWorkForm
-  include App::Inject[view: 'templates.upload_work']
+  include DefDeps[:page]
+
   def call(env)
     [
       200,
       {},
-      [View.render(view)],
+      [page.render('upload_work')],
     ]
   end
 end

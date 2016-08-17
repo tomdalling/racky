@@ -2,7 +2,7 @@ require 'feature_test'
 
 class QueriesHomepageTest < FeatureTest
   def test_it
-    query = App['queries.homepage']
+    query = resolve('queries/homepage')
 
     result = query.call
 

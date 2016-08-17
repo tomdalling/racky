@@ -1,5 +1,5 @@
 class Queries::User
-  include App::Inject['db']
+  include DefDeps['db']
 
   def find(id)
     user = db[:users].first(id: id)

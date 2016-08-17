@@ -3,6 +3,9 @@ require 'dry/component/container'
 require 'pigeon/routing'
 require 'session'
 require 'sequel'
+require 'page'
+require 'inflecto'
+require 'def_deps'
 
 #TODO: These empty modules exists so that classes can do this:
 #
@@ -23,6 +26,7 @@ end
 module Commands
 end
 
+#TODO: this is not thread safe
 class MemoizingResolver < Dry::Container::Resolver
   def initialize(*)
     super
@@ -36,24 +40,36 @@ class MemoizingResolver < Dry::Container::Resolver
   end
 end
 
-class App < Dry::Component::Container
+Dry::Container.configure do |config|
+  config.namespace_separator = '/'
+end
+
+class App
   ROOT = Pathname.new(__FILE__).dirname.dirname
 
-  load_paths! 'app'
-  configure do |config|
-    config.root = ROOT
-    config.resolver = MemoizingResolver.new
-    config.auto_register = [
-      'app/controllers',
-      'app/queries',
-      'app/commands',
-    ]
+  attr_reader :container
+
+  def initialize(config)
+    @container = Dry::Container.new
+    @container.register('config', config)
+    @container.register('db', db_connection)
+    @container.register('page', page)
+    @container.import(templates)
+    register_app_directory!('queries')
+    register_app_directory!('commands')
+    register_app_directory!('controllers')
+    @container.register('router', router)
   end
 
-  register 'db' do
-    #TODO: this needs to be moved out into config
-    conf = (ENV['RACK_ENV'] == 'test' ? ':memory:' : 'database.sqlite3')
-    Sequel.sqlite(conf).tap do |db|
+  def config
+    @container.resolve('config')
+  end
+
+  def db_connection
+    #(ENV['RACK_ENV'] == 'test' ? ':memory:' : 'database.sqlite3')
+    Sequel.connect(config.db_connection_str).tap do |db|
+      #TODO: This needs to be moved out.
+      #      Creating tables should happen manually, not automatically.
       if db.tables.empty?
         schema_path = ROOT + 'app/schema.rb'
         db.instance_eval(schema_path.read, schema_path.to_s, 1)
@@ -61,22 +77,86 @@ class App < Dry::Component::Container
     end
   end
 
-  namespace 'templates' do
-    Dir.glob("#{ROOT}/app/templates/**/*.erb") do |path|
-      register(File.basename(path, '.*')) do
-        Template.new(File.read(path), path)
+  def page
+    resolver = ->(key){ @container["templates/#{key}"] }
+    Page.new(resolver)
+  end
+
+  def templates
+    Dry::Container::Namespace.new('templates') do
+      Dir.glob("#{ROOT}/app/templates/**/*.erb") do |path|
+        register(File.basename(path, '.*')) do
+          Template.new(File.read(path), path)
+        end
       end
     end
   end
 
-  register 'router' do
-    resolver = ->(controller_key){ resolve("controllers.#{controller_key}") }
+  def register_app_directory!(dirname)
+    DefDepsClassFile.glob("app", "#{dirname}/**/*.rb") do |class_file|
+      container.register(class_file.container_key) do
+        class_file.instantiate(container)
+      end
+    end
+  end
+
+  def router
+    resolver = Proc.new do |key|
+      @container.resolve(key.is_a?(Symbol) ? "controllers/#{key}" : key)
+    end
     Pigeon::Routing::DSL.new(resolver).eval_file(ROOT + 'app/routes.rb')
   end
 
-  def self.call(env)
-    resolve('router').call(env)
+  def call(env)
+    @container.resolve('router').call(env)
   end
 
-  finalize!
+  module Inject
+    def self.[](whatever)
+      Module.new
+    end
+  end
+end
+
+class DefDepsClassFile
+  attr_reader :container_key
+
+  def self.glob(dir, path_pattern)
+    dir = Pathname(dir)
+
+    Pathname.glob(dir.join(path_pattern)) do |path|
+      this = new(path.relative_path_from(dir))
+      yield this
+    end
+  end
+
+  def initialize(path)
+    @container_key = Pathname(path).sub_ext('').to_s
+  end
+
+  def to_proc
+    method(:instantiate).to_proc
+  end
+
+  def instantiate(container)
+    require @container_key
+    klass_name = Inflecto.camelize(@container_key)
+    klass = Inflecto.constantize(klass_name)
+    args = ctor_args(klass, container)
+    klass.new(*args)
+  end
+
+  def ctor_args(klass, container)
+    if klass.const_defined?(:DECLARED_DEPENDENCIES)
+      [deps_for(klass, container)]
+    else
+      []
+    end
+  end
+
+  def deps_for(klass, container)
+    klass::DECLARED_DEPENDENCIES.map do |attr, key|
+      [attr, container[key]]
+    end.to_h
+  end
 end

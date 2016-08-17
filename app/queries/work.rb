@@ -1,5 +1,5 @@
 class Queries::Work
-  include App::Inject['db']
+  include DefDeps['db']
 
   def call(user_machine_name, work_machine_name)
     author_attrs = db[:users].first(machine_name: user_machine_name)

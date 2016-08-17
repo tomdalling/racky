@@ -6,6 +6,7 @@ Dir.chdir(ROOT_DIR)
 
 $LOAD_PATH.unshift(File.expand_path('test', ROOT_DIR))
 $LOAD_PATH.unshift(File.expand_path('lib', ROOT_DIR))
+$LOAD_PATH.unshift(File.expand_path('app', ROOT_DIR))
 
 require 'minitest/autorun'
 require 'minitest/pride'

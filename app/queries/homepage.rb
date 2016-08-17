@@ -1,10 +1,10 @@
 class Queries::Homepage
-  include App::Inject['db']
+  include DefDeps['db']
 
   def call
     featured = featured_work
     latest = latest_work
-    preload_author!([featured, latest])
+    preload_author!([featured, latest].compact)
 
     OpenStruct.new(
       featured: featured,

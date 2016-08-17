@@ -5,7 +5,7 @@ middleware Rack::Session::Cookie,
   secret: '#TODO: change_me',
   coder: Rack::Session::Cookie::Base64::ZipJSON.new
 
-middleware Authentication
+middleware Authentication, _resolve('queries/user')
 
 get  '/' => :home
 get  '/css/style.css' => :stylesheet

@@ -4,9 +4,9 @@ require 'authentication'
 require 'password'
 
 class Controllers::SignIn
-  include App::Inject[
-    users: 'queries.user',
-    view: 'templates.sign_in',
+  include DefDeps[
+    :page,
+    users: 'queries/user',
   ]
 
   def call(env)
@@ -18,7 +18,7 @@ class Controllers::SignIn
       session[Authentication::SESSION_KEY] = user.id
       [303, { 'Location' => '/dashboard' }, []]
     else
-      body = View.render(view, error: 'Email or password was incorrect', current_user: nil)
+      body = page.render(:sign_in, error: 'Email or password was incorrect', current_user: nil)
       [200, {}, [body]]
     end
   end

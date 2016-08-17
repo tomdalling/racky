@@ -1,7 +1,7 @@
 require 'authentication'
 
 class Controllers::UploadWork
-  include App::Inject['commands.create_work']
+  include DefDeps[create_work: 'commands/create_work']
 
   def call(env)
     current_user = Authentication.get(env)

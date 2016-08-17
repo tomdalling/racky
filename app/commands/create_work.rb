@@ -2,7 +2,7 @@ require 'work'
 require 'lif'
 
 class Commands::CreateWork
-  include App::Inject['db']
+  include DefDeps['db']
 
   def call(params, user_id)
     attrs = {

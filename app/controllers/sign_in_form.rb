@@ -1,7 +1,7 @@
 require 'params'
 
 class Controllers::SignInForm
-  include App::Inject[view: 'templates.sign_in']
+  include DefDeps[:page]
 
   def call(env)
     current_user = Authentication.get(env)
@@ -10,7 +10,7 @@ class Controllers::SignInForm
     else
       params = Params.get(env)
       error = params['return_url'] ? 'You must be signed in to view that page' : nil
-      body = View.render(view, error: error, current_user: nil)
+      body = page.render(:sign_in, error: error, current_user: nil)
       [200, {}, [body]]
     end
   end
