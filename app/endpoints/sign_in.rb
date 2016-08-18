@@ -1,19 +1,15 @@
-require 'params'
-require 'session'
 require 'authentication'
-require 'password'
+require 'endpoint'
 
-class Endpoints::SignIn
+class Endpoints::SignIn < Endpoint
   include DefDeps[:page, sign_in: 'commands/sign_in']
 
-  def call(env)
-    params = Params.get(env)
+  def run
     user = sign_in.call(params.fetch('email'), params.fetch('password'))
     if user
-      Session.clear(env)
-      session = Session.get(env)
+      session.clear
       session[Authentication::SESSION_KEY] = user.id
-      [303, { 'Location' => '/dashboard' }, []]
+      redirect('/dashboard')
     else
       page.response(:sign_in,
         error: 'Email or password was incorrect',
