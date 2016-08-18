@@ -1,9 +1,18 @@
 require 'pigeon/routing'
 require 'params'
 require 'session'
+require 'def_deps'
 
 class Endpoint
   MalformedResponse = Class.new(StandardError)
+
+  def self.new(*)
+    super.freeze
+  end
+
+  def self.dependencies(*args)
+    include DefDeps[*args]
+  end
 
   def call(env)
     twin = dup

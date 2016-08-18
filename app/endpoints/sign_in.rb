@@ -2,7 +2,10 @@ require 'authentication'
 require 'endpoint'
 
 class Endpoints::SignIn < Endpoint
-  include DefDeps[:page, sign_in: 'commands/sign_in']
+  dependencies(
+    :page,
+    sign_in: 'commands/sign_in',
+  )
 
   def run
     user = sign_in.call(params.fetch('email'), params.fetch('password'))

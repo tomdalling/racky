@@ -27,7 +27,6 @@ class EndpointTest < UnitTest
 
   def setup
     @dog = Dog.new('hello')
-    @dog.freeze
   end
 
   def test_cloning
@@ -73,5 +72,15 @@ class EndpointTest < UnitTest
   def test_redirect
     response = @dog.send(:redirect, '/blah')
     expect(response) == [303, {'Location' => '/blah'}, []]
+  end
+
+  def test_frozen
+    expect(Dog.new.frozen?) == true
+  end
+
+  def test_def_deps
+    expect(@dog.respond_to?(:woof)) == false
+    Dog.dependencies(:woof)
+    expect(@dog.respond_to?(:woof)) == true
   end
 end
