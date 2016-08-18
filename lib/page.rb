@@ -13,4 +13,8 @@ class Page
       content: template.render(args),
     ))
   end
+
+  def response(template_name, args={})
+    [200, {}, [render(template_name, args)]]
+  end
 end
