@@ -91,6 +91,7 @@ class App
   end
 end
 
+#TODO: this needs to be moved somewhere
 class DefDepsClassFile
   attr_reader :container_key
 
