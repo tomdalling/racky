@@ -10,7 +10,7 @@ module Params
     content_type = env.fetch('CONTENT_TYPE', '')
 
     case
-    when env['QUERY_STRING'].length > 0
+    when env.fetch('QUERY_STRING', '').length > 0
       Rack::Utils.parse_nested_query(env['QUERY_STRING'])
     when content_type == 'application/x-www-form-urlencoded'
       body = env['rack.input']
