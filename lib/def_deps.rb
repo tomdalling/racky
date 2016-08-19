@@ -25,6 +25,12 @@ module DefDeps
           instance_variable_set("@#{attr}", dep)
         end
       end
+
+      # Gives the module a nicer name, something like Whatever::DefDepsMixin
+      # instead of #<Module 0xA3B4C5939393>
+      def self.included(descendant)
+        descendant.const_set(:DefDepsMixin, self)
+      end
     end
   end
 
