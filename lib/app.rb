@@ -129,7 +129,7 @@ class DefDepsClassFile
   end
 
   def deps_for(klass, container)
-    klass::DECLARED_DEPENDENCIES.map do |attr, key|
+    DefDeps.get(klass).map do |attr, key|
       [attr, container[key]]
     end.to_h
   end

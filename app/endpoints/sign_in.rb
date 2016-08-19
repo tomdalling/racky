@@ -2,19 +2,16 @@ require 'authentication'
 require 'endpoint'
 
 class Endpoints::SignIn < Endpoint
-  dependencies(
-    :page,
-    sign_in: 'commands/sign_in',
-  )
+  dependencies sign_in: 'commands/sign_in'
 
   def run
-    user = sign_in.call(params.fetch('email'), params.fetch('password'))
+    user = sign_in.call(params['email'], params['password'])
     if user
       session.clear
       session[Authentication::SESSION_KEY] = user.id
       redirect('/dashboard')
     else
-      page.response(:sign_in,
+      render(:sign_in,
         error: 'Email or password was incorrect',
         current_user: nil,
       )

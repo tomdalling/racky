@@ -3,21 +3,38 @@ module DefDeps
   MissingDependency = Class.new(StandardError)
 
   def self.[](*deps_input)
-    deps = standardize_deps(deps_input)
-    Module.new do
-      const_set(:DECLARED_DEPENDENCIES, deps)
-      deps.each { |attr, _| attr_reader(attr) }
+    declared_deps = standardize_deps(deps_input)
+    Module.new do |mod|
+      const_set(:DECLARED_DEPENDENCIES, declared_deps)
+      declared_deps.each { |attr, _| attr_reader(attr) }
 
-      def initialize(given_deps)
-        self.class::DECLARED_DEPENDENCIES.each do |attr, _|
+      # Accepts a single hash of dependencies
+      define_method(:initialize) do |given_deps|
+        superclass = self.class.ancestors.drop_while{ |c| c != mod }[1]
+        if superclass.const_defined?(:DECLARED_DEPENDENCIES)
+          super(given_deps)
+        else
+          super()
+        end
+
+        declared_deps.each do |attr, _|
           dep = given_deps[attr]
-          if dep.nil?
-            raise MissingDependency, "Missing dependency: #{attr.inspect}"
+          if nil == dep
+            raise MissingDependency, "Missing dependency for #{self.class}: #{attr.inspect}"
           end
           instance_variable_set("@#{attr}", dep)
         end
       end
     end
+  end
+
+  def self.get(klass)
+    klass
+      .ancestors
+      .reverse
+      .select { |k| k.const_defined?(:DECLARED_DEPENDENCIES, false)}
+      .map{ |k| k::DECLARED_DEPENDENCIES }
+      .reduce({}, &:merge!)
   end
 
   def self.standardize_deps(deps_input)

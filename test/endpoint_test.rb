@@ -3,8 +3,11 @@ require 'endpoint'
 
 class EndpointTest < UnitTest
   class Dog < Endpoint
-    def initialize(ivar = nil)
+    dependencies :woof
+
+    def initialize(ivar = nil, dependencies={})
       @ivar = ivar
+      super(dependencies)
     end
 
     def run
@@ -26,7 +29,7 @@ class EndpointTest < UnitTest
   end
 
   def setup
-    @dog = Dog.new('hello')
+    @dog = Dog.new('hello', woof: true, page: true)
   end
 
   def test_cloning
@@ -75,12 +78,20 @@ class EndpointTest < UnitTest
   end
 
   def test_frozen
-    expect(Dog.new.frozen?) == true
+    expect(@dog.frozen?) == true
   end
 
   def test_def_deps
-    expect(@dog.respond_to?(:woof)) == false
-    Dog.dependencies(:woof)
     expect(@dog.respond_to?(:woof)) == true
+  end
+
+  def test_render
+    page = Minitest::Mock.new
+    dog = Dog.new('woof', woof: true, page: page)
+
+    page.expect(:render, 'body', [:bark])
+    dog.send(:render, :bark)
+
+    page.verify
   end
 end

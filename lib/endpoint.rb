@@ -6,6 +6,8 @@ require 'def_deps'
 class Endpoint
   MalformedResponse = Class.new(StandardError)
 
+  include DefDeps[:page]
+
   def self.new(*)
     super.freeze
   end
@@ -38,6 +40,10 @@ class Endpoint
 
     def redirect(location)
       [303, { 'Location' => location }, []]
+    end
+
+    def render(template_name, *args)
+      [200, {}, [page.render(template_name, *args)]]
     end
 
   private
