@@ -11,10 +11,10 @@ class Endpoints::SignIn < Endpoint
       session[Authentication::SESSION_KEY] = user.id
       redirect('/dashboard')
     else
-      render(:sign_in,
+      render :sign_in, {
         error: 'Email or password was incorrect',
-        current_user: nil,
-      )
+      }
     end
   end
 end
+

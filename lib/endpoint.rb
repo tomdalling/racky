@@ -1,6 +1,7 @@
 require 'pigeon/routing'
 require 'params'
 require 'session'
+require 'authentication'
 require 'def_deps'
 
 class Endpoint
@@ -38,12 +39,17 @@ class Endpoint
       @session ||= Session.get(env)
     end
 
+    def current_user
+      @current_user ||= Authentication.get(env)
+    end
+
     def redirect(location)
       [303, { 'Location' => location }, []]
     end
 
-    def render(template_name, *args)
-      [200, {}, [page.render(template_name, *args)]]
+    def render(template_name, args={})
+      args = args.merge(current_user: current_user)
+      [200, {}, [page.render(template_name, args)]]
     end
 
   private
