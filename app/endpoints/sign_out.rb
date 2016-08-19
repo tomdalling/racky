@@ -1,6 +1,8 @@
-class Endpoints::SignOut
-  def call(env)
-    Session.clear(env)
-    [303, { 'Location' => '/' }, []]
+require 'endpoint'
+
+class Endpoints::SignOut < Endpoint
+  def run
+    session.clear
+    redirect('/')
   end
 end

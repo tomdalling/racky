@@ -1,5 +1,6 @@
 require 'sass'
 
+# This should probably be part of the build process, not an endpoint.
 class Endpoints::Stylesheet
   def initialize
     @engine = Sass::Engine.new('@import "stylesheet"',

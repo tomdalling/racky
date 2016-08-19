@@ -1,21 +1,17 @@
 require 'work_decorator'
 require 'http_cache'
+require 'endpoint'
 
-class Endpoints::Home
-  include DefDeps[
-    :page,
-    query: 'queries/homepage',
-  ]
+class Endpoints::Home < Endpoint
+  dependencies query: 'queries/homepage'
 
-  def call(env)
+  def run
     home = query.call
     HTTPCache.if_none_match(etag(home), env) do
-      [
-        page.render(:home,
-          featured_work: home.featured && WorkDecorator.new(home.featured),
-          latest_work: home.latest && WorkDecorator.new(home.latest),
-        )
-      ]
+      render(:home,
+        featured_work: home.featured && WorkDecorator.new(home.featured),
+        latest_work: home.latest && WorkDecorator.new(home.latest),
+      )
     end
   end
 

@@ -49,7 +49,7 @@ class Endpoint
 
     def render(template_name, args={})
       args = args.merge(current_user: current_user)
-      [200, {}, [page.render(template_name, args)]]
+      page.render(template_name, args)
     end
 
   private

@@ -1,16 +1,12 @@
-require 'authentication'
 require 'work_decorator'
 
-class Endpoints::Dashboard
-  include DefDeps[:page, query: 'queries/dashboard']
+class Endpoints::Dashboard < Endpoint
+  dependencies query: 'queries/dashboard'
 
-  def call(env)
-    current_user = Authentication.get(env)
+  def run
     dashboard = query.call(current_user)
-    body = page.render(:dashboard,
-      current_user: current_user,
+    render(:dashboard,
       works: dashboard.works.map{ |w| WorkDecorator.new(w) },
     )
-    [200, {}, [body]]
   end
 end

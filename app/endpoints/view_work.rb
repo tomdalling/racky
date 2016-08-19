@@ -1,21 +1,15 @@
-require 'lif'
+require 'endpoint'
 require 'work_decorator'
 
-class Endpoints::ViewWork
-  include DefDeps[
-    :page,
-    query: 'queries/work',
-  ]
+class Endpoints::ViewWork < Endpoint
+  dependencies query: 'queries/work'
 
-  def call(env)
-    params = Params.get(env)
+  def run
     work = query.call(params.fetch(:user), params.fetch(:work))
     if work
-      [200, {}, [page.render(:work,
-        work: WorkDecorator.new(work),
-      )]]
+      render(:work, work: WorkDecorator.new(work))
     else
-      [404, {}, ['Not found']]
+      404
     end
   end
 end

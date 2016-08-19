@@ -1,11 +1,7 @@
-class Endpoints::UploadWorkForm
-  include DefDeps[:page]
+require 'endpoint'
 
-  def call(env)
-    [
-      200,
-      {},
-      [page.render('upload_work')],
-    ]
+class Endpoints::UploadWorkForm < Endpoint
+  def run
+    render(:upload_work)
   end
 end

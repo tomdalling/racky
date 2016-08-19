@@ -1,12 +1,10 @@
-require 'authentication'
+require 'endpoint'
 
-class Endpoints::UploadWork
-  include DefDeps[create_work: 'commands/create_work']
+class Endpoints::UploadWork < Endpoint
+  dependencies create_work: 'commands/create_work'
 
-  def call(env)
-    current_user = Authentication.get(env)
-    params = Params.get(env)
-    work = create_work.call(params, current_user.id)
-    [303, { 'Location' => "/@#{current_user.machine_name}/#{work.machine_name}" }, []]
+  def run
+    work = create_work.call(params, current_user)
+    redirect(WorkDecorator.new(work).path)
   end
 end
