@@ -53,7 +53,7 @@ class Endpoint
       page.render(template_name, args)
     end
 
-    def cache(options, &block)
+    def anon_cache(options, &block)
       options = options.merge(cache_control: current_user ? :no_cache : :public)
       HTTPCache.response(env, options, &block)
     end

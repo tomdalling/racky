@@ -8,7 +8,7 @@ class Endpoints::ViewWork < Endpoint
   def run
     work = query.call(params.fetch(:user), params.fetch(:work))
     if work
-      cache(max_age: 60, etag: WorkETag.generate(work)) do
+      anon_cache(max_age: 60, etag: WorkETag.generate(work)) do
         render(:work, work: WorkDecorator.new(work))
       end
     else
