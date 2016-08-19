@@ -3,6 +3,7 @@ require 'params'
 require 'session'
 require 'authentication'
 require 'def_deps'
+require 'http_cache'
 
 class Endpoint
   MalformedResponse = Class.new(StandardError)
@@ -50,6 +51,11 @@ class Endpoint
     def render(template_name, args={})
       args = args.merge(current_user: current_user)
       page.render(template_name, args)
+    end
+
+    def cache(options, &block)
+      options = options.merge(cache_control: current_user ? :no_cache : :public)
+      HTTPCache.response(env, options, &block)
     end
 
   private
