@@ -7,7 +7,7 @@ class Endpoints::Home < Endpoint
 
   def run
     home = query.call
-    HTTPCache.if_none_match(etag(home), env) do
+    cache(etag: etag(home)) do
       render(:home,
         featured_work: home.featured && WorkDecorator.new(home.featured),
         latest_work: home.latest && WorkDecorator.new(home.latest),
