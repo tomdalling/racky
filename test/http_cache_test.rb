@@ -12,7 +12,10 @@ class HTTPCacheTest < UnitTest
 
     expect(response) == [
       200,
-      { 'Last-Modified' => 'Sat, 08 Aug 2015 00:00:00 GMT' },
+      {
+        'Cache-Control' => 'private',
+        'Last-Modified' => 'Sat, 08 Aug 2015 00:00:00 GMT',
+      },
       ['Response body'],
     ]
   end
@@ -27,7 +30,10 @@ class HTTPCacheTest < UnitTest
 
     expect(response) == [
       304,
-      { 'Last-Modified' => 'Sat, 06 Jun 2015 00:00:00 GMT' },
+      {
+        'Cache-Control' => 'private',
+        'Last-Modified' => 'Sat, 06 Jun 2015 00:00:00 GMT',
+      },
       [],
     ]
   end
@@ -51,7 +57,10 @@ class HTTPCacheTest < UnitTest
 
     expect(response) == [
       200,
-      { 'ETag' => 'W/"def456"' },
+      {
+        'Cache-Control' => 'private',
+        'ETag' => 'W/"def456"',
+      },
       ['body'],
     ]
   end
@@ -64,7 +73,10 @@ class HTTPCacheTest < UnitTest
 
     expect(response) == [
       304,
-      { 'ETag' => 'W/"abc123"' },
+      {
+        'Cache-Control' => 'private',
+        'ETag' => 'W/"abc123"',
+      },
       []
     ]
   end
@@ -73,13 +85,14 @@ class HTTPCacheTest < UnitTest
     last_modified = Time.utc(2015, 11, 11)
     etag = 'abc123'
 
-    response = HTTPCache.response(env: {}, last_modified: last_modified, etag: etag) do
+    response = HTTPCache.response({}, last_modified: last_modified, etag: etag) do
       ['body']
     end
 
     expect(response) == [
       200,
       {
+        'Cache-Control' => 'private',
         'Last-Modified' => 'Wed, 11 Nov 2015 00:00:00 GMT',
         'ETag' => 'W/"abc123"',
       },
@@ -95,13 +108,14 @@ class HTTPCacheTest < UnitTest
       'HTTP_IF_MODIFIED_SINCE' => 'Sat, 06 Jun 2015 00:00:00 GMT',
     }
 
-    response = HTTPCache.response(env: env, last_modified: last_modified, etag: etag) do
+    response = HTTPCache.response(env, last_modified: last_modified, etag: etag) do
       ['body']
     end
 
     expect(response) == [
       200,
       {
+        'Cache-Control' => 'private',
         'Last-Modified' => 'Wed, 11 Nov 2015 00:00:00 GMT',
         'ETag' => 'W/"abc123"',
       },
@@ -117,13 +131,14 @@ class HTTPCacheTest < UnitTest
       'HTTP_IF_MODIFIED_SINCE' => 'Wed, 11 Nov 2015 00:00:00 GMT',
     }
 
-    response = HTTPCache.response(env: env, last_modified: last_modified, etag: etag) do
+    response = HTTPCache.response(env, last_modified: last_modified, etag: etag) do
       ['body']
     end
 
     expect(response) == [
       304,
       {
+        'Cache-Control' => 'private',
         'Last-Modified' => 'Wed, 11 Nov 2015 00:00:00 GMT',
         'ETag' => 'W/"abc123"',
       },
@@ -139,16 +154,37 @@ class HTTPCacheTest < UnitTest
       'HTTP_IF_MODIFIED_SINCE' => 'Wed, 11 Nov 2015 00:00:00 GMT',
     }
 
-    response = HTTPCache.response(env: env, last_modified: last_modified, etag: etag) do
+    response = HTTPCache.response(env, last_modified: last_modified, etag: etag) do
       ['body']
     end
 
     expect(response) == [
       200,
       {
+        'Cache-Control' => 'private',
         'Last-Modified' => 'Wed, 11 Nov 2015 00:00:00 GMT',
         'ETag' => 'W/"def456"',
       },
+      ['body'],
+    ]
+  end
+
+  def test_max_age
+    response = HTTPCache.response({}, max_age: 12) { ['body'] }
+
+    expect(response) == [
+      200,
+      { 'Cache-Control' => 'private, max-age=12' },
+      ['body'],
+    ]
+  end
+
+  def test_cache_control
+    response = HTTPCache.response({}, cache_control: :public) { ['body'] }
+
+    expect(response) == [
+      200,
+      { 'Cache-Control' => 'public' },
       ['body'],
     ]
   end
