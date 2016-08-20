@@ -4,6 +4,10 @@ require 'work_etag'
 
 class Endpoints::ViewWork < Endpoint
   dependencies query: 'queries/work'
+  params {{
+    user: String,
+    work: String,
+  }}
 
   def run
     work = query.call(params.fetch(:user), params.fetch(:work))

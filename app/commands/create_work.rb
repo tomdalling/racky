@@ -4,12 +4,12 @@ require 'lif'
 class Commands::CreateWork
   include DefDeps['db']
 
-  def call(params, author)
+  def call(attrs, author)
     attrs = {
-      title: params.fetch('title'),
-      machine_name: Work.machine_name(params.fetch('title')),
+      title: attrs.fetch(:title),
+      machine_name: Work.machine_name(attrs.fetch(:title)),
       user_id: author.id,
-      lif_document: lif_json_for_docx_file(params.fetch('file').fetch(:tempfile)),
+      lif_document: lif_json_for_docx_file(attrs.fetch(:file).fetch(:tempfile)),
       published_at: Time.now, #TODO: don't auto-publish new documents
     }
 

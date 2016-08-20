@@ -4,6 +4,11 @@ require 'endpoint'
 class EndpointTest < UnitTest
   class Dog < Endpoint
     dependencies :woof
+    params {{
+      return_ivar: boolean,
+      render_page: maybe(Symbol),
+      response_body: any,
+    }}
 
     def initialize(ivar = nil, dependencies={})
       @ivar = ivar
@@ -21,7 +26,7 @@ class EndpointTest < UnitTest
     end
   end
 
-  def env(response_body: 'body', return_ivar: false, render_page: false)
+  def env(response_body: 'body', return_ivar: false, render_page: nil)
     {
       Pigeon::Routing::CAPTURES_ENV_KEY => {
         response_body: response_body,
@@ -93,7 +98,7 @@ class EndpointTest < UnitTest
     dog = Dog.new('woof', woof: true, page: page)
 
     page.expect(:render, 'poodle', [:bark, { current_user: nil }])
-    response = dog.call(env(render_page: [:bark]))
+    response = dog.call(env(render_page: :bark))
 
     expect(response) == [200, {}, ['poodle']]
     page.verify

@@ -4,9 +4,12 @@ require 'session'
 require 'authentication'
 require 'def_deps'
 require 'http_cache'
+require 'rschema'
 
 class Endpoint
   MalformedResponse = Class.new(StandardError)
+  ParamsNotDeclared = Class.new(StandardError)
+  InvalidParams = Class.new(StandardError)
 
   include DefDeps[:page]
 
@@ -16,6 +19,10 @@ class Endpoint
 
   def self.dependencies(*args)
     include DefDeps[*args]
+  end
+
+  def self.params(&block)
+    const_set(:PARAMS_SCHEMA, RSchema.schema(&block))
   end
 
   def call(env)
@@ -33,7 +40,16 @@ class Endpoint
     end
 
     def params
-      @params ||= Params.get(env)
+      unless self.class.const_defined?(:PARAMS_SCHEMA)
+        raise ParamsNotDeclared, "Params were not declared for #{self.class}"
+      end
+
+      @params ||= begin
+        schema = self.class::PARAMS_SCHEMA
+        RSchema.coerce!(schema, Params.get(env))
+      rescue RSchema::ValidationError => ex
+        raise InvalidParams, ex.message
+      end
     end
 
     def session
