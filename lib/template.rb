@@ -19,7 +19,7 @@ class Template
   def render(context=nil)
     # don't pass hashes directly into the template, because erubis
     # converts them to some wierd Eribus::Context object
-    @erb.evaluate(context.is_a?(Hash) ? OpenStruct.new(context) : context)
+    @erb.evaluate(context.is_a?(Hash) ? Args.new(context) : context)
   end
 
   def self.extract_frontmatter(source)
@@ -31,4 +31,24 @@ class Template
       [{}, source]
     end
   end
+
+  private
+
+    class Args
+      def initialize(vars)
+        @vars = vars
+      end
+
+      def method_missing(symbol, *args)
+        if @vars.has_key?(symbol) && args.empty?
+          @vars.fetch(symbol)
+        else
+          super
+        end
+      end
+
+      def respond_to?(sym, include_all=false)
+        @vars.has_key?(sym) || super
+      end
+    end
 end
