@@ -97,7 +97,7 @@ class EndpointTest < UnitTest
     page = Minitest::Mock.new
     dog = Dog.new('woof', woof: true, page: page)
 
-    page.expect(:render, 'poodle', [:bark, { current_user: nil }])
+    page.expect(:render, 'poodle', [:bark, { current_user: nil }, nil])
     response = dog.call(env(render_page: :bark))
 
     expect(response) == [200, {}, ['poodle']]

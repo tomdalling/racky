@@ -18,14 +18,11 @@ require 'container'
 #       class Whatever
 #
 # These should probably be elsewhere.
-module Endpoints
-end
-module Views
-end
-module Queries
-end
-module Commands
-end
+module Endpoints; end
+module Views; end
+module Queries; end
+module Commands; end
+module ViewModels; end
 
 class App
   ROOT = Pathname.new(__FILE__).dirname.dirname

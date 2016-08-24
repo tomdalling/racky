@@ -1,7 +1,6 @@
 require 'endpoint'
 require 'work_etag'
-require 'work_decorator'
-require 'http_cache'
+require 'view_models/homepage'
 
 class Endpoints::Home < Endpoint
   dependencies query: 'queries/homepage'
@@ -10,10 +9,7 @@ class Endpoints::Home < Endpoint
     home = query.call
     etag = WorkETag.generate(home.featured, home.latest)
     anon_cache(etag: etag, max_age: 60) do
-      render(:home,
-        featured_work: home.featured && WorkDecorator.new(home.featured),
-        latest_work: home.latest && WorkDecorator.new(home.latest),
-      )
+      render(:home, home.to_h, ViewModels::Homepage)
     end
   end
 end
