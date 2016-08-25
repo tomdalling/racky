@@ -11,6 +11,7 @@ class Endpoints::Stylesheet
   end
 
   def call(env)
+    #TODO: caching
     [200, {}, [@engine.render]]
   end
 end
