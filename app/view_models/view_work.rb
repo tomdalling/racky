@@ -20,8 +20,4 @@ class ViewModels::ViewWork
   def body
     work.document_html
   end
-
-  def bio
-    'TODO: here'
-  end
 end
