@@ -9,6 +9,10 @@ class WorkDecorator
     @work.title
   end
 
+  def author
+    @work.author
+  end
+
   def document_html
     @document_html ||= begin
       document ? LIF::HTMLConverter.convert(document) : ""

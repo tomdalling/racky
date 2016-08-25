@@ -1,4 +1,11 @@
+---
+title: "#{title} by #{author.name}"
+view_model: view_models/view_work
+---
+
 <div class="lif-document lif-document-page">
-  <h1 class="title"><%= work.title %></h1>
-  <%== work.document_html %>
+  <h1 class="title"><%= title %></h1>
+  <%== body %>
 </div>
+
+<%== render :bio, author %>

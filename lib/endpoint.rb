@@ -64,9 +64,8 @@ class Endpoint
       [303, { 'Location' => location }, []]
     end
 
-    def render(template_name, args={}, view_model_class=nil)
-      args = args.merge(current_user: current_user)
-      page.render(template_name, args, view_model_class)
+    def render(template_name, *args)
+      page.render(template_name, args, current_user: current_user)
     end
 
     def anon_cache(options, &block)

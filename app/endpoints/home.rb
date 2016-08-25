@@ -9,7 +9,7 @@ class Endpoints::Home < Endpoint
     home = query.call
     etag = WorkETag.generate(home.featured, home.latest)
     anon_cache(etag: etag, max_age: 60) do
-      render(:home, home.to_h, ViewModels::Homepage)
+      render(:home, home)
     end
   end
 end
