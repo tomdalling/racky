@@ -3,6 +3,31 @@ view_model: view_models/bio
 ---
 
 <div class="author-bio">
-  <%= author.name %>
-  TODO: here
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 <%= animated ? 'wow fadeInUp' : '' %>">
+        <img src="<%= gravatar_url %>" width="200" height="200" class="img img-circle img-border" />
+        <span class="written-by">Written by</span>
+        <span class="author-name"><%= author.name %></span>
+
+        <% if website %>
+          <p class="links">
+            <i class="fa fa-link"></i>
+            <a class="website" href="<%= website %>" rel="nofollow">
+              <%= website %>
+            </a>
+          </p>
+        <% end %>
+
+        <% if twitter_username %>
+          <p class="links">
+            <i class="fa fa-twitter"></i>
+            <a class="twitter" href="https://twitter.com/<%= twitter_username %>" rel="nofollow">
+              @<%= twitter_username %>
+            </a>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>

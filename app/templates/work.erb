@@ -3,9 +3,11 @@ title: "#{title} by #{author.name}"
 view_model: view_models/view_work
 ---
 
-<div class="lif-document lif-document-page">
-  <h1 class="title"><%= title %></h1>
-  <%== body %>
+<div class="container">
+  <div class="lif-document lif-document-page">
+    <h1 class="title"><%= title %></h1>
+    <%== body %>
+  </div>
 </div>
 
 <%== render :bio, author %>

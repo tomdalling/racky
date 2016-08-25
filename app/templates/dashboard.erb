@@ -2,12 +2,16 @@
 title: 'Dashboard'
 ---
 
-<h1>Works</h1>
+<div class="container">
+  <div class="col-md-12">
+    <h1>Works</h1>
 
-<ul>
-  <% works.each do |w| %>
-    <li>
-      <a href="<%= w.path %>"><%= w.title %></a>
-    </li>
-  <% end %>
-</ul>
+    <ul>
+      <% works.each do |w| %>
+        <li>
+          <a href="<%= w.path %>"><%= w.title %></a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

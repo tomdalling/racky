@@ -1,14 +1,18 @@
 ---
 title: 'Upload Work'
 ---
-<form action="/works/upload" method="POST" enctype="multipart/form-data">
-  <div class="form_group">
-    <label for="title">Title</label>
-    <input name="title" id="title" class="form-control" />
+<div class="container">
+  <div class="col-md-12">
+    <form action="/works/upload" method="POST" enctype="multipart/form-data">
+      <div class="form_group">
+        <label for="title">Title</label>
+        <input name="title" id="title" class="form-control" />
+      </div>
+      <div class="form_group">
+        <label for="file">Word Document</label>
+        <input name="file" type="file" id="file" class="form-control" />
+      </div>
+      <input value="Upload" type="submit" class="btn btn-primary" />
+    </form>
   </div>
-  <div class="form_group">
-    <label for="file">Word Document</label>
-    <input name="file" type="file" id="file" class="form-control" />
-  </div>
-  <input value="Upload" type="submit" class="btn btn-primary" />
-</form>
+</div>
