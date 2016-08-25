@@ -1,3 +1,17 @@
 #!/bin/bash
 
-bundle exec pry -I "$0/../../lib" -r app
+bundle exec ruby -x "$0"
+exit
+
+#!/user/env ruby
+$LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
+$LOAD_PATH.unshift(File.expand_path('../app', File.dirname(__FILE__)))
+require 'app'
+require 'config'
+require 'pry'
+
+config = Config.from_file(App::ROOT.join('config.yml'))
+app = App.new(config)
+db = app.container.resolve('db')
+binding.pry
+exit
