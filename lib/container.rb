@@ -31,8 +31,8 @@ class Container
     return @memos[key] if @memos.has_key?(key)
 
     if @resolve_stack.include?(key)
-      cycle = @resolve_stack + [key]
-      raise CyclicDependencies, "Found cyclic dependencies: #{cycle.map(&:inspect).join(' -> ')}"
+      cycle = (@resolve_stack + [key]).map(&:inspect).join(' -> ')
+      raise CyclicDependencies, "Found cyclic dependencies: #{cycle}"
     end
 
     item = @registry.fetch(key) do
