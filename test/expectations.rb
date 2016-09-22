@@ -15,6 +15,10 @@ module Expectations
       @test.assert_equal(expected, @value, _msg)
     end
 
+    def !=(expected)
+      @test.refute_equal(expected, @value, _msg)
+    end
+
     def is_a(klass)
       @test.assert_kind_of(klass, @value, _msg)
     end
@@ -35,6 +39,12 @@ module Expectations
 
     def starts_with(prefix)
       @test.assert_send([@value, :start_with?, prefix], _msg)
+    end
+
+    def has_attrs(attr_hash)
+      attr_hash.each do |attr, expected_value|
+        @test.assert_equal(@value.send(attr), expected_value, _msg)
+      end
     end
 
     def _msg
