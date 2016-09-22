@@ -67,7 +67,7 @@ module Pigeon
       def assign_attr!(attr, options, value_hash)
         value = case
                 when value_hash.has_key?(attr)
-                  options.coercer.call(value_hash[attr])
+                  options.typecaster.call(value_hash[attr])
                 when options.default != AttributeOptions::NotSpecified
                   options.default
                 else
@@ -78,16 +78,23 @@ module Pigeon
       end
 
       class AttributeOptions
-        attr_reader :default, :coercer
+        KEYS = [:default, :type]
+
+        attr_reader :default, :typecaster
 
         def initialize(options)
+          unrecognised = options.keys - KEYS
+          unless unrecognised.empty?
+            raise ArgumentError, "Unrecognised option key(s): #{unrecognised.map(&:inspect).join(', ')}"
+          end
+
           @default = options.fetch(:default, NotSpecified)
-          @coercer = options.fetch(:coercer, IdentityCoercer)
+          @typecaster = options.fetch(:type, IdentityTypecaster)
           freeze
         end
 
         NotSpecified = Class.new(Object)
-        IdentityCoercer = ->(x){ x }
+        IdentityTypecaster = ->(x){ x }
       end
   end
 end

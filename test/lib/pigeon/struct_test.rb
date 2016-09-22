@@ -4,7 +4,7 @@ require 'pigeon/struct'
 class PigeonStructTest < UnitTest
   Person = Pigeon::Struct.define do
     def_attr :name, default: 'Rigby'
-    def_attr :age, coercer: method(:Integer)
+    def_attr :age, type: method(:Integer)
   end
 
   def test_ctor_and_attrs
@@ -32,7 +32,7 @@ class PigeonStructTest < UnitTest
     expect(rigby.name) == 'Rigby'
   end
 
-  def test_coercer
+  def test_type
     hex = Person.new(age: '0xFF')
     expect(hex.age) == 255
   end
