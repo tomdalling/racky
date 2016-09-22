@@ -1,13 +1,19 @@
+require 'models'
+
 class Queries::User
   include DefDeps['db']
 
   def find(id)
-    user = db[:users].first(id: id)
-    user ? OpenStruct.new(user) : nil
+    db[:users]
+      .where(id: id)
+      .map{ |attrs| User.new(attrs) }
+      .first
   end
 
   def find_by_email(email)
-    user = db[:users].where(email: email).first
-    user ? OpenStruct.new(user) : nil
+    db[:users]
+      .where(email: email)
+      .map{ |attrs| User.new(attrs) }
+      .first
   end
 end

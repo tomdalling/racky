@@ -43,5 +43,4 @@ Framework
    - Deployment strategy
    - Make bin/db_reset and bin/db_migrate or equivalent
    - Sequel migrations (probably ditch schema.rb, and just run all migrations)
-   - Immutable model objects (replace current use of OpenStruct)
 

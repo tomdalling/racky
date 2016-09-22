@@ -1,39 +1,45 @@
+require 'models'
+
 class Queries::Homepage
   include DefDeps['db']
 
-  def call
-    featured = featured_work
-    latest = latest_work
-    preload_author!([featured, latest].compact)
+  Result = Pigeon::Struct.define do
+    def_attr :featured
+    def_attr :latest
+  end
 
-    OpenStruct.new(
+  def call
+    featured, latest = preload_authors(featured_work, latest_work)
+
+    Result.new(
       featured: featured,
       latest: latest,
     )
   end
 
   def latest_work
-    work = db[:works]
-        .order(:published_at)
-        .last
-    work ? OpenStruct.new(work) : nil
+    db[:works]
+      .reverse_order(:published_at)
+      .limit(1)
+      .map { |attrs| Work.new(attrs) }
+      .first
   end
 
   def featured_work
-    work = db[:works]
-        .exclude(featured_at: nil)
-        .exclude(published_at: nil)
-        .order_by(:featured_at)
-        .last
-    work ? OpenStruct.new(work) : nil
+    db[:works]
+      .exclude(featured_at: nil)
+      .exclude(published_at: nil)
+      .reverse_order(:featured_at)
+      .map { |attrs| Work.new(attrs) }
+      .first
   end
 
-  def preload_author!(works)
-    uids = works.map{ |w| w.user_id }
+  def preload_authors(*works)
+    uids = works.compact.map{ |w| w.user_id }
     authors = db[:users].where(id: uids).to_hash(:id)
 
-    works.each do |w|
-      w.author = OpenStruct.new(authors.fetch(w.user_id))
+    works.map do |w|
+      w ? w.with(author: User.new(authors.fetch(w.user_id))) : nil
     end
   end
 end

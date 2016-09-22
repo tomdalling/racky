@@ -1,4 +1,4 @@
-require 'work'
+require 'models'
 require 'lif'
 
 class Commands::CreateWork
@@ -11,11 +11,12 @@ class Commands::CreateWork
       user_id: author.id,
       lif_document: lif_json_for_docx_file(attrs.fetch(:file).fetch(:tempfile)),
       published_at: Time.now, #TODO: don't auto-publish new documents
+      featured_at: nil,
     }
 
     id = db[:works].insert(attrs)
 
-    OpenStruct.new(attrs.merge(id: id, author: author))
+    Work.new(attrs.merge(id: id, author: author))
   end
 
   def lif_json_for_docx_file(docx_file)
