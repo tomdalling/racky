@@ -1,12 +1,12 @@
 require 'pathname'
 require 'template'
 require 'pigeon/routing'
+require 'pigeon/container'
 require 'session'
 require 'sequel'
 require 'page'
 require 'inflecto'
 require 'def_deps'
-require 'container'
 
 #TODO: These empty modules exists so that classes can do this:
 #
@@ -30,7 +30,7 @@ class App
   attr_reader :container
 
   def initialize(config)
-    @container = Container.new
+    @container = Pigeon::Container.new
     @container.register('config') { config }
     @container.register('db') { db_connection }
     @container.register('page') { page }
