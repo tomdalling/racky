@@ -1,23 +1,24 @@
 require 'pigeon/struct'
-
-Work = Pigeon::Struct.define do
-  def_attr :id
-  def_attr :user_id
-  def_attr :title
-  def_attr :machine_name
-  def_attr :lif_document
-  def_attr :featured_at
-  def_attr :published_at
-
-  def_attr :author, default: nil
-end
+require 'attrs'
 
 User = Pigeon::Struct.define do
-  def_attr :id
-  def_attr :email
-  def_attr :name
-  def_attr :machine_name
-  def_attr :password_hash
+  def_attr :id, coercer: Attrs::PrimaryKey
+  def_attr :email, coercer: Attrs.type(String)
+  def_attr :name, coercer: Attrs.type(String)
+  def_attr :machine_name, coercer: Attrs::MachineName
+  def_attr :password_hash, coercer: Attrs.type(String)
+end
+
+Work = Pigeon::Struct.define do
+  def_attr :id, coercer: Attrs::PrimaryKey
+  def_attr :user_id, coercer: Attrs::ForeignKey
+  def_attr :title, coercer: Attrs.type(String)
+  def_attr :machine_name, coercer: Attrs::MachineName
+  def_attr :lif_document, coercer: Attrs.type(String)
+  def_attr :featured_at, coercer: Attrs.maybe_type(Time)
+  def_attr :published_at, coercer: Attrs.maybe_type(Time)
+
+  def_attr :author, default: nil, coercer: Attrs.maybe_type(User)
 end
 
 #TODO: probably put all these methods elsewhere
