@@ -32,7 +32,7 @@ class Container
 
     if @resolve_stack.include?(key)
       cycle = (@resolve_stack + [key]).map(&:inspect).join(' -> ')
-      raise CyclicDependencies, "Found cyclic dependencies: #{cycle}"
+      raise CyclicDependencies, "Cyclic dependencies not allowed (cycle: #{cycle})"
     end
 
     item = @registry.fetch(key) do

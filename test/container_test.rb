@@ -35,7 +35,7 @@ class ContainerTest < UnitTest
     ex = assert_raises(Container::CyclicDependencies) do
       container['cheese']
     end
-    expect(ex.message) == 'Found cyclic dependencies: "cheese" -> "milk" -> "pregnant.cat" -> "mouse" -> "cheese"'
+    expect(ex.message) == 'Cyclic dependencies not allowed (cycle: "cheese" -> "milk" -> "pregnant.cat" -> "mouse" -> "cheese")'
   end
 
   def test_missing_block
