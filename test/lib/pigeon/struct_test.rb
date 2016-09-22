@@ -13,6 +13,11 @@ class PigeonStructTest < UnitTest
     expect(tom.age) == 104
   end
 
+  def test_subscript
+    tom = Person.new(age: 105)
+    expect(tom[:age]) == 105
+  end
+
   def test_with
     original = Person.new(name: 'Bart', age: 55)
     renamed = original.with(name: 'Lisa')

@@ -46,6 +46,10 @@ module Pigeon
         .to_h
     end
 
+    def [](attr)
+      send(attr)
+    end
+
     def ==(other)
       eql?(other)
     end
