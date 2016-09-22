@@ -1,7 +1,6 @@
 App
 ---
 
- - Feature: edit author bio
  - Feature: edit work
  - Feature: Author portfolio (list of works)
  - Feature: unpublished/published works

@@ -22,10 +22,10 @@ class ViewModels::Bio
   end
 
   def website
-    'http://example.com' #TODO: here
+    @author.website
   end
 
   def twitter_username
-    'example' #TODO: here
+    @author.twitter_username
   end
 end

@@ -23,6 +23,8 @@ group :authentication_required do
   get  '/dashboard' => :dashboard
   get  '/works/upload' => :upload_work_form
   post '/works/upload' => :upload_work
+  get  '/bio' => :edit_bio_form
+  post '/bio' => :edit_bio
 end
 
 always :not_found

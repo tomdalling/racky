@@ -16,4 +16,6 @@ create_table(:users) do
   String :name
   String :machine_name, unique: true
   String :password_hash
+  String :website
+  String :twitter_username
 end

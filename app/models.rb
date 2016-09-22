@@ -7,6 +7,8 @@ User = Pigeon::Struct.define do
   def_attr :name, type: Attrs.type(String)
   def_attr :machine_name, type: Attrs::MachineName
   def_attr :password_hash, type: Attrs.type(String)
+  def_attr :website, type: Attrs.maybe_type(String)
+  def_attr :twitter_username, type: Attrs.maybe_type(String)
 end
 
 Work = Pigeon::Struct.define do

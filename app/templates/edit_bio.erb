@@ -1,0 +1,42 @@
+---
+title: "Edit Bio"
+---
+
+<div class="container">
+  <h1>Edit Bio</h1>
+
+  <form action="/bio" method="POST">
+    <div class="form-group">
+      <label>Picture</label>
+      <p>Your picture is the <a href="https://en.gravatar.com/support/what-is-gravatar/">Gravatar</a>
+      associated with your email address
+      (<%= user.email %>). If you want to change your picture, please do so
+      on the Gravatar website.</p>
+      <a href="https://www.gravatar.com/" class="btn btn-default">
+        Change Picture on Gravatar.com
+      </a>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input name="name" value="<%= user.name %>" type="text" class="form-control" placeholder="Anonymous" id="name" />
+    </div>
+
+    <div class="form-group">
+      <label for="website">Website</label>
+      <input name="website" value="<%= user.website %>" type="text" class="form-control" placeholder="None" id="website" />
+    </div>
+
+    <div class="form-group">
+      <label for="twitter_username">Twitter Username</label>
+      <div class="input-group">
+        <div class="input-group-addon">@</div>
+        <input name="twitter_username" value="<%= user.twitter_username %>" type="text" class="form-control" placeholder="None" id="twitter_username" />
+      </div>
+    </div>
+
+    <input type="submit" value="Update Bio" class="btn btn-primary" />
+  </form>
+</div>
+
+<%== render :bio, user %>

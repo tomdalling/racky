@@ -1,9 +1,11 @@
 user(
   id: 1,
-  name: 'Sam Smith',
-  machine_name: 'sam',
   email: 'sam@example.com',
   password_hash: password_hash('slippery sam'),
+  name: 'Sam Smith',
+  machine_name: 'sam',
+  website: 'http://sam.example.com/',
+  twitter_username: 'sam',
 )
 
 work title: 'Old Mold', published_at: Time.now - 100

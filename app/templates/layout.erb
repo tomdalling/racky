@@ -19,6 +19,7 @@
         <ul class="nav navbar-nav navbar-right">
           <% if current_user %>
             <li><a href="/works/upload">Upload</a></li>
+            <li><a href="/bio">Edit Bio</a></li>
             <li><p class="navbar-text"><%= current_user.name || current_user.email %></p></li>
             <li>
               <form method="POST" action="/auth/sign_out" class="navbar-form">
