@@ -22,7 +22,9 @@ class Endpoint
   end
 
   def self.params(&block)
-    const_set(:PARAMS_SCHEMA, RSchema.schema(&block))
+    schema = RSchema.define_hash(&block)
+    coerced = RSchema::HTTPCoercer.wrap(schema)
+    const_set(:PARAMS_SCHEMA, coerced)
   end
 
   def call(env)
@@ -46,9 +48,11 @@ class Endpoint
 
       @params ||= begin
         schema = self.class::PARAMS_SCHEMA
-        RSchema.coerce!(schema, Params.get(env))
-      rescue RSchema::ValidationError => ex
-        raise InvalidParams, ex.message
+        result = schema.call(Params.get(env))
+
+        raise InvalidParams, result.error.inspect if result.invalid?
+
+        result.value
       end
     end
 

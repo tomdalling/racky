@@ -4,8 +4,8 @@ require 'endpoint'
 class Endpoints::SignIn < Endpoint
   dependencies sign_in: 'commands/sign_in'
   params {{
-    email: String,
-    password: String,
+    email: _String,
+    password: _String,
   }}
 
   def run

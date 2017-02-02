@@ -5,9 +5,9 @@ class EndpointTest < UnitTest
   class Dog < Endpoint
     dependencies :woof
     params {{
-      return_ivar: boolean,
-      render_page: maybe(Symbol),
-      response_body: any,
+      return_ivar: Boolean(),
+      render_page: maybe(_Symbol),
+      response_body: anything,
     }}
 
     def initialize(ivar = nil, dependencies={})

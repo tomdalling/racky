@@ -12,7 +12,7 @@ group :production do
   gem 'rubyzip', '~> 1.2.0'
   gem 'sass', '~> 3.4.22'
   gem 'inflecto', '~> 0.0.2'
-  gem 'rschema', '~> 2.4.0'
+  gem 'rschema', '>= 3.0.1.pre'
 end
 
 group :test do

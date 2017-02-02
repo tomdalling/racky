@@ -4,9 +4,9 @@ class Endpoints::EditBio < Endpoint
   dependencies update_bio: 'commands/update_bio'
 
   params {{
-    name: String,
-    website: maybe(String),
-    twitter_username: maybe(String),
+    name: _String,
+    website: maybe(_String),
+    twitter_username: maybe(_String),
   }}
 
   def run

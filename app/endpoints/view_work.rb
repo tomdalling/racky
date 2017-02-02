@@ -5,8 +5,8 @@ require 'view_models/view_work'
 class Endpoints::ViewWork < Endpoint
   dependencies query: 'queries/work'
   params {{
-    user: String,
-    work: String,
+    user: _String,
+    work: _String,
   }}
 
   def run
