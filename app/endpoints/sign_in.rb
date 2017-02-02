@@ -1,7 +1,6 @@
 require 'authentication'
-require 'endpoint'
 
-class Endpoints::SignIn < Endpoint
+class Endpoints::SignIn < RequestHandler
   dependencies sign_in: 'commands/sign_in'
   params {{
     email: _String,

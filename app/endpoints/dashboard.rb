@@ -1,6 +1,6 @@
 require 'work_decorator'
 
-class Endpoints::Dashboard < Endpoint
+class Endpoints::Dashboard < RequestHandler
   dependencies query: 'queries/dashboard'
 
   def run

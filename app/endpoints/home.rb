@@ -1,8 +1,7 @@
-require 'endpoint'
 require 'work_etag'
 require 'view_models/homepage'
 
-class Endpoints::Home < Endpoint
+class Endpoints::Home < RequestHandler
   dependencies query: 'queries/homepage'
 
   def run

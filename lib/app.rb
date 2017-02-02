@@ -7,6 +7,7 @@ require 'sequel'
 require 'page'
 require 'inflecto'
 require 'def_deps'
+require 'request_handler'
 
 #TODO: These empty modules exists so that classes can do this:
 #

@@ -1,6 +1,4 @@
-require 'endpoint'
-
-class Endpoints::EditBio < Endpoint
+class Endpoints::EditBio < RequestHandler
   dependencies update_bio: 'commands/update_bio'
 
   params {{

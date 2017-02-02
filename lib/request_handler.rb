@@ -6,7 +6,7 @@ require 'def_deps'
 require 'http_cache'
 require 'rschema'
 
-class Endpoint
+class RequestHandler
   MalformedResponse = Class.new(StandardError)
   ParamsNotDeclared = Class.new(StandardError)
   InvalidParams = Class.new(StandardError)

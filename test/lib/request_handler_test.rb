@@ -1,8 +1,8 @@
 require 'unit_test'
-require 'endpoint'
+require 'request_handler'
 
-class EndpointTest < UnitTest
-  class Dog < Endpoint
+class RequestHandlerTest < UnitTest
+  class Dog < RequestHandler
     dependencies :woof
     params {{
       return_ivar: Boolean(),

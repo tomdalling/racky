@@ -1,6 +1,4 @@
-require 'endpoint'
-
-class Endpoints::SignInForm < Endpoint
+class Endpoints::SignInForm < RequestHandler
   params {{
     optional(:return_url) => _String
   }}

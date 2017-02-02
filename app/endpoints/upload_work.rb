@@ -1,6 +1,4 @@
-require 'endpoint'
-
-class Endpoints::UploadWork < Endpoint
+class Endpoints::UploadWork < RequestHandler
   dependencies create_work: 'commands/create_work'
   params {{
     title: _String,

@@ -1,8 +1,7 @@
-require 'endpoint'
 require 'work_etag'
 require 'view_models/view_work'
 
-class Endpoints::ViewWork < Endpoint
+class Endpoints::ViewWork < RequestHandler
   dependencies query: 'queries/work'
   params {{
     user: _String,

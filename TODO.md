@@ -23,7 +23,6 @@ Framework
 
  > Controller/routing layer
    - Integrate Rack::Protection
-   - Consider renaming Endpoint => RequestHandler
    - Consider using Mustermann for route pattern matching
    - Consider replacing RSchema with dry-validation
    - Lazy endpoint lookup in the routing tree (so it doesn't eager load all

@@ -1,6 +1,4 @@
-require 'endpoint'
-
-class Endpoints::SignOut < Endpoint
+class Endpoints::SignOut < RequestHandler
   def run
     session.clear
     redirect('/')
