@@ -4,7 +4,7 @@ App
  - Feature: edit work
  - Feature: Author portfolio (list of works)
  - Feature: unpublished/published works
- - Cache generated SCSS
+ - Switch to webpack for frontend
  - Change wording on homepage to indicate closed alpha
  - Try make it not look shit
  - Integrate wow.js
