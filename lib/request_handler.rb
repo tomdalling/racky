@@ -42,11 +42,11 @@ class RequestHandler
     end
 
     def params
-      unless self.class.const_defined?(:PARAMS_SCHEMA)
-        raise ParamsNotDeclared, "Params were not declared for #{self.class}"
-      end
-
       @params ||= begin
+        unless self.class.const_defined?(:PARAMS_SCHEMA)
+          raise ParamsNotDeclared, "Params were not declared for #{self.class}"
+        end
+
         schema = self.class::PARAMS_SCHEMA
         result = schema.call(Params.get(env))
 

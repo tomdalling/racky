@@ -1,5 +1,3 @@
-require 'enforce_authenticated'
-
 middleware Rack::Session::Cookie,
   key: Session::COOKIE_NAME,
   secret: '#TODO: change_me',

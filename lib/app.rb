@@ -8,6 +8,10 @@ require 'page'
 require 'inflecto'
 require 'def_deps'
 require 'request_handler'
+require 'work_decorator'
+require 'href_for'
+require 'enforce_authenticated'
+
 
 #TODO: These empty modules exists so that classes can do this:
 #

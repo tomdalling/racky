@@ -15,19 +15,19 @@
 
     <nav class="navbar navbar-default">
       <div class="container">
-        <a class="navbar-brand" href="<%= current_user ? '/dashboard' : '/' %>">Litmal</a>
+        <a class="navbar-brand" href="<%= HrefFor[current_user ? :dashboard : :homepage] %>">Litmal</a>
         <ul class="nav navbar-nav navbar-right">
           <% if current_user %>
-            <li><a href="/works/upload">Upload</a></li>
-            <li><a href="/bio">Edit Bio</a></li>
+            <li><a href="<%= HrefFor.upload_work %>">Upload</a></li>
+            <li><a href="<%= HrefFor.bio %>">Edit Bio</a></li>
             <li><p class="navbar-text"><%= current_user.name || current_user.email %></p></li>
             <li>
-              <form method="POST" action="/auth/sign_out" class="navbar-form">
+              <form method="POST" action="<%= HrefFor.sign_out %>" class="navbar-form">
                 <input type="submit" value="Sign Out" class="btn btn-default" />
               </form>
             <li>
           <% else %>
-            <li><a href="/auth/sign_in">Sign In</a></li>
+            <li><a href="<%= HrefFor.sign_in %>">Sign In</a></li>
           <% end %>
         </ul>
       </div>

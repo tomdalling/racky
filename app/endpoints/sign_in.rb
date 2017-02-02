@@ -5,17 +5,19 @@ class Endpoints::SignIn < RequestHandler
   params {{
     email: _String,
     password: _String,
+    optional(:return_url) => _String,
   }}
 
   def run
-    user = sign_in.call(params[:email], params[:password])
+    user = sign_in.(params[:email], params[:password])
     if user
-      session.clear
-      session[Authentication::SESSION_KEY] = user.id
-      redirect('/dashboard')
+      Authentication.store(session, user.id)
+      redirect(params[:return_url] || HrefFor.dashboard)
     else
-      render :sign_in, { error: 'Email or password was incorrect' }
+      render(:sign_in,
+        error: 'Email or password was incorrect',
+        return_url: params[:return_url],
+      )
     end
   end
 end
-

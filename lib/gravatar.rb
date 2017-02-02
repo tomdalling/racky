@@ -1,3 +1,5 @@
+require 'cgi'
+
 module Gravatar
   DEFAULT_OPTIONS = {
     size: 200,

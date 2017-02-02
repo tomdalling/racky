@@ -5,6 +5,7 @@ class Commands::UpdateBio
     db[:users]
       .where(id: user.id)
       .update(attrs)
+
     nil
   end
 end

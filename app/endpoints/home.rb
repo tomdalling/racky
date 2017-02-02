@@ -1,14 +1,15 @@
 require 'work_etag'
-require 'view_models/homepage'
 
-class Endpoints::Home < RequestHandler
-  dependencies query: 'queries/homepage'
+module Endpoints
+  class Home < RequestHandler
+    dependencies fetch_homepage: 'queries/homepage'
 
-  def run
-    home = query.call
-    etag = WorkETag.generate(home.featured, home.latest)
-    anon_cache(etag: etag, max_age: 60) do
-      render(:home, home)
+    def run
+      home = fetch_homepage.()
+      etag = WorkETag.generate(home.featured, home.latest)
+      anon_cache(etag: etag, max_age: 60) do
+        render(:home, home)
+      end
     end
   end
 end

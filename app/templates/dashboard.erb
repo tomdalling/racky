@@ -7,9 +7,9 @@ title: 'Dashboard'
     <h1>Works</h1>
 
     <ul>
-      <% works.each do |w| %>
+      <% works.map(&WorkDecorator).each do |w| %>
         <li>
-          <a href="<%= w.path %>"><%= w.title %></a>
+          <a href="<%= HrefFor[w] %>"><%= w.title %></a>
         </li>
       <% end %>
     </ul>

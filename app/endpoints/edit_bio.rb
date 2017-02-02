@@ -8,7 +8,7 @@ class Endpoints::EditBio < RequestHandler
   }}
 
   def run
-    update_bio.call(params, current_user)
-    redirect('/bio')
+    update_bio.(params, current_user)
+    redirect(HrefFor.bio)
   end
 end

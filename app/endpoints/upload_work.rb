@@ -6,7 +6,7 @@ class Endpoints::UploadWork < RequestHandler
   }}
 
   def run
-    work = create_work.call(params, current_user)
-    redirect(WorkDecorator.new(work).path)
+    work = create_work.(params, current_user)
+    redirect(HrefFor.work(work))
   end
 end

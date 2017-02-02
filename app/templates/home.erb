@@ -22,7 +22,7 @@ view_model: view_models/homepage
           <h2 class="title"><%= featured_work.title %></h2>
           <%== featured_work.blurb_html %>
         </div>
-        <a class="read-more" href="<%= featured_work.path %>">Continue reading &rarr;</a>
+        <a class="read-more" href="<%= HrefFor[featured_work] %>">Continue reading &rarr;</a>
       <% else %>
         <p>None</p>
       <% end %>
@@ -35,7 +35,7 @@ view_model: view_models/homepage
           <h2 class="title"><%= latest_work.title %></h2>
           <%== latest_work.blurb_html %>
         </div>
-        <a class="read-more" href="<%= latest_work.path %>">Continue reading &rarr;</a>
+        <a class="read-more" href="<%= HrefFor[latest_work] %>">Continue reading &rarr;</a>
       <% else %>
         <p>None</p>
       <% end %>

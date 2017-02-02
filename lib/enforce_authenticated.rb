@@ -6,11 +6,10 @@ class EnforceAuthenticated
   end
 
   def call(env)
-    if Authentication.get(env)
+    if Authentication.authenticated?(env)
       @next_app.call(env)
     else
-      #TODO: return url
-      return_url = URI.escape('whatever')
+      return_url = URI.escape(env['PATH_INFO'])
       [303, { 'Location' => "/auth/sign_in?return_url=#{return_url}" }, []]
     end
   end

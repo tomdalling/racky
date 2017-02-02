@@ -13,6 +13,5 @@ class WorkDecoratorTest < UnitTest
     expect(decorator.title) == 'Hi There'
     expect(decorator.document_html) == '<p>This is a very short document.</p>'
     expect(decorator.blurb_html) == '<p>This is a very short document.</p>'
-    expect(decorator.path) == '/@bob/hi_there'
   end
 end

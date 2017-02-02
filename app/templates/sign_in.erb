@@ -21,6 +21,9 @@ title: Sign In
         <label for="password">Password</label>
         <input name="password" type="password" id="password" class="form-control" />
       </div>
+      <% if return_url %>
+        <input type="hidden" name="return_url" value="<%= return_url %>" />
+      <% end %>
       <input type="submit" value="Sign In" class="btn btn-primary" />
     </form>
   </div>

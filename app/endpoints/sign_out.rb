@@ -1,6 +1,6 @@
 class Endpoints::SignOut < RequestHandler
   def run
-    session.clear
-    redirect('/')
+    Authentication.clear(session)
+    redirect(HrefFor.homepage)
   end
 end

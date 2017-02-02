@@ -1,18 +1,6 @@
 require 'lif'
 
-class WorkDecorator
-  def initialize(work)
-    @work = work
-  end
-
-  def title
-    @work.title
-  end
-
-  def author
-    @work.author
-  end
-
+class WorkDecorator < SimpleDelegator
   def document_html
     @document_html ||= begin
       document ? LIF::HTMLConverter.convert(document) : ""
@@ -29,18 +17,17 @@ class WorkDecorator
     end
   end
 
-  def path
-    raise "Work must have author preloaded" unless @work.author
-    "/@#{@work.author.machine_name}/#{@work.machine_name}"
-  end
-
   def document
     @document ||= begin
-      if @work.lif_document
-        LIF::JSON::Parser.parse(@work.lif_document)
+      if lif_document
+        LIF::JSON::Parser.parse(lif_document)
       else
         nil
       end
     end
+  end
+
+  def self.to_proc
+    ->(work) { new(work) }
   end
 end

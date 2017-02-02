@@ -1,12 +1,8 @@
-require 'work_decorator'
-
 class Endpoints::Dashboard < RequestHandler
-  dependencies query: 'queries/dashboard'
+  dependencies fetch_dashboard: 'queries/dashboard'
 
   def run
-    dashboard = query.call(current_user)
-    render(:dashboard,
-      works: dashboard.works.map{ |w| WorkDecorator.new(w) },
-    )
+    dashboard = fetch_dashboard.(current_user)
+    render(:dashboard, works: dashboard.works)
   end
 end
