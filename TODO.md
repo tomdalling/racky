@@ -39,4 +39,5 @@ Framework
    - Deployment strategy
    - Make bin/db_reset and bin/db_migrate or equivalent
    - Sequel migrations (probably ditch schema.rb, and just run all migrations)
-
+   - Move functionality out into separate gems, which live in their own
+     directory within the project
