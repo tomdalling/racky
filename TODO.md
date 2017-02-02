@@ -25,8 +25,7 @@ Framework
    - Integrate Rack::Protection
    - Consider using Mustermann for route pattern matching
    - Consider replacing RSchema with dry-validation
-   - Lazy endpoint lookup in the routing tree (so it doesn't eager load all
-     endpoints)
+   - Switch to enabled/disable lazy endpoint loading
 
  > Multithreading:
    - IoC container needs to be thread safe

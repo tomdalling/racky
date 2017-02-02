@@ -79,13 +79,30 @@ class App
 
   def router
     resolver = Proc.new do |key|
-      @container.resolve(key.is_a?(Symbol) ? "endpoints/#{key}" : key)
+      if key.is_a?(Symbol)
+        LazyEndpointResolver.new(@container, "endpoints/#{key}")
+      else
+        @container.resolve(key)
+      end
     end
+
     Pigeon::Routing::DSL.new(resolver).eval_file(ROOT + 'app/routes.rb')
   end
 
   def call(env)
     @container.resolve('router').call(env)
+  end
+end
+
+class LazyEndpointResolver
+  def initialize(container, key)
+    @container = container
+    @key = key
+  end
+
+  def call(env)
+    @endpoint ||= @container.resolve(@key)
+    @endpoint.call(env)
   end
 end
 
