@@ -2,11 +2,11 @@ class Endpoints::UploadWork < RequestHandler
   dependencies create_work: 'commands/create_work'
   params {{
     title: _String,
-    file: anything,
+    file: uploaded_file,
   }}
 
   def run
     work = create_work.(params, current_user)
-    redirect(HrefFor.work(work))
+    redirect(HrefFor[work])
   end
 end

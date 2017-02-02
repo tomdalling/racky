@@ -11,6 +11,7 @@ require 'request_handler'
 require 'work_decorator'
 require 'href_for'
 require 'enforce_authenticated'
+require 'rschema_additions'
 
 
 #TODO: These empty modules exists so that classes can do this:
