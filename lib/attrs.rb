@@ -37,7 +37,7 @@ module Attrs
       if value.is_a?(klass)
         value
       else
-        raise ArgumentError, "Not a #{klass.inspect}: #{value}"
+        raise ArgumentError, "Not a #{klass.inspect}: #{value.inspect}"
       end
     end
   end
