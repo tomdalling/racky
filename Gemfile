@@ -8,7 +8,7 @@ group :production do
   gem 'sqlite3', '~> 1.3.11'
   gem 'bcrypt', '~> 3.1.11'
   gem 'values', '~> 1.8.0'
-  gem 'ox', '~> 2.4.3'
+  gem 'ox', '~> 2.4'
   gem 'rubyzip', '~> 1.2.0'
   gem 'sass', '~> 3.4.22'
   gem 'inflecto', '~> 0.0.2'
