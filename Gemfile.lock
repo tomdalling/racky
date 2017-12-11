@@ -37,7 +37,7 @@ GEM
     rack-test (0.6.3)
       rack (>= 1.0)
     rschema (3.0.1.pre3)
-    rubyzip (1.2.0)
+    rubyzip (1.2.1)
     sass (3.4.22)
     sequel (4.36.0)
     slop (3.6.0)
